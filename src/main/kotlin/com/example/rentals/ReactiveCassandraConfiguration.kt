@@ -3,6 +3,7 @@ package com.example.rentals
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.cassandra.config.AbstractReactiveCassandraConfiguration
 import org.springframework.data.cassandra.config.CassandraClusterFactoryBean
+import org.springframework.data.cassandra.config.SchemaAction
 import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification
 import org.springframework.data.cassandra.repository.config.EnableReactiveCassandraRepositories
 
@@ -26,4 +27,6 @@ class ReactiveCassandraConfiguration: AbstractReactiveCassandraConfiguration() {
                 .withSimpleReplication(1)
                 .ifNotExists())
     }
+
+    override fun getSchemaAction() = SchemaAction.CREATE_IF_NOT_EXISTS
 }
