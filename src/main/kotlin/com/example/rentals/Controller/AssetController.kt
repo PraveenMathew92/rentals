@@ -17,7 +17,7 @@ class AssetController(private val assetService: AssetService) {
     fun create(@RequestBody asset: Asset): Mono<ResponseEntity<Asset>> {
         return assetService
                 .create(asset)
-                .map { it -> if(it) ResponseEntity(asset, HttpStatus.CREATED)
-                    else ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY)}
+                .map { it -> if (it) ResponseEntity(asset, HttpStatus.CREATED)
+                    else ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY) }
     }
 }

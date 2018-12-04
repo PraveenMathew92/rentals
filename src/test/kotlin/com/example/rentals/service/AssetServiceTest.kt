@@ -11,10 +11,10 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import reactor.core.publisher.Mono
-import java.util.*
+import java.util.UUID
 
-class AssetServiceTest{
-    private val assetRepository : AssetRepository = mock()
+class AssetServiceTest {
+    private val assetRepository: AssetRepository = mock()
 
     @Test
     fun `should call the save method of repository to create a new asset`() {

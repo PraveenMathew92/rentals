@@ -7,10 +7,9 @@ import org.springframework.data.cassandra.config.SchemaAction
 import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification
 import org.springframework.data.cassandra.repository.config.EnableReactiveCassandraRepositories
 
-
 @Configuration
 @EnableReactiveCassandraRepositories
-class ReactiveCassandraConfiguration: AbstractReactiveCassandraConfiguration() {
+class ReactiveCassandraConfiguration : AbstractReactiveCassandraConfiguration() {
     private val KEYSPACE_NAME = "rentals"
 
     override fun getKeyspaceName(): String = KEYSPACE_NAME

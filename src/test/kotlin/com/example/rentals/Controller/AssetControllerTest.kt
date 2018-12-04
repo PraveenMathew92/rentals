@@ -11,13 +11,13 @@ import org.mockito.Mockito.verify
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import reactor.core.publisher.Mono
-import java.util.*
+import java.util.UUID
 
-internal class AssetControllerTest{
+internal class AssetControllerTest {
     val assetService = Mockito.mock(AssetService::class.java)
 
     @Test
-    fun `should add the asset passed in the request to database`(){
+    fun `should add the asset passed in the request to database`() {
         val assetController = AssetController(assetService)
 
         val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
@@ -31,7 +31,7 @@ internal class AssetControllerTest{
     }
 
     @Test
-    fun `should return the status 201 when the save is successful`(){
+    fun `should return the status 201 when the save is successful`() {
         val assetController = AssetController(assetService)
 
         val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
@@ -44,7 +44,7 @@ internal class AssetControllerTest{
     }
 
     @Test
-    fun `should return the status 422 when the save is unsuccessful`(){
+    fun `should return the status 422 when the save is unsuccessful`() {
         val assetController = AssetController(assetService)
 
         val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),

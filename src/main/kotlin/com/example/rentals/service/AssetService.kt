@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
-class AssetService(private val assetRepository: AssetRepository){
+class AssetService(private val assetRepository: AssetRepository) {
     fun create(asset: Asset): Mono<Boolean> {
         return assetRepository
                 .save(asset)
