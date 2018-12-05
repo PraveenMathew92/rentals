@@ -4,10 +4,12 @@ import com.example.rentals.domain.Asset
 import com.example.rentals.service.AssetService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
@@ -22,7 +24,8 @@ class AssetController(private val assetService: AssetService) {
                     else ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY) }
     }
 
-    fun get(id: String): Mono<ResponseEntity<Asset>> {
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: String): Mono<ResponseEntity<Asset>> {
         return assetService
                 .get(id)
                 .map { ResponseEntity<Asset>(it, HttpStatus.OK) }
