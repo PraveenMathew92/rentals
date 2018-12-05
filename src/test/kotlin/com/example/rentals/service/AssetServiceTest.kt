@@ -7,10 +7,13 @@ import com.example.rentals.repository.AssetRepository
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 import java.util.UUID
 
 class AssetServiceTest {
@@ -55,5 +58,27 @@ class AssetServiceTest {
         val assetService = AssetService(assetRepository)
 
         assertFalse(assetService.create(asset).block()!!)
+    }
+
+    @Test
+    fun `should return an empty Mono if the asset id is not a UUID`() {
+        val assetService = AssetService(assetRepository)
+
+        whenever(assetRepository.findById(UUID(0, 0))).thenReturn(Mono.empty())
+
+        assertNull(assetService.get("Non-UUID String").block())
+    }
+
+    @Test
+    fun `should return the asset if found in database`() {
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+
+        whenever(assetRepository.findById(asset.id)).thenReturn(asset.toMono())
+
+        val assetService = AssetService(assetRepository)
+
+        assertEquals(asset, assetService.get(asset.id.toString()).block())
     }
 }
