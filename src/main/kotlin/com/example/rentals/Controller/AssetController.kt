@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 
 @RestController
 @RequestMapping("/asset")
@@ -19,5 +20,12 @@ class AssetController(private val assetService: AssetService) {
                 .create(asset)
                 .map { it -> if (it) ResponseEntity(asset, HttpStatus.CREATED)
                     else ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY) }
+    }
+
+    fun get(id: String): Mono<ResponseEntity<Asset>> {
+        return assetService
+                .get(id)
+                .map{ ResponseEntity<Asset>(it, HttpStatus.OK) }
+                .switchIfEmpty(ResponseEntity<Asset>(HttpStatus.NOT_FOUND).toMono())
     }
 }

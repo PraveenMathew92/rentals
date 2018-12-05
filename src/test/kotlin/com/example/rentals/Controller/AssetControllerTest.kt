@@ -55,4 +55,30 @@ internal class AssetControllerTest {
 
         assertEquals(ResponseEntity<Asset>(HttpStatus.UNPROCESSABLE_ENTITY), assetController.create(asset).block())
     }
+
+    @Test
+    fun `should return 404 when the user is not found in the database`() {
+        val assetController = AssetController(assetService)
+        val id = "65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"
+
+        whenever(assetService.get(id)).thenReturn(Mono.empty())
+
+        assertEquals(ResponseEntity<Asset>(HttpStatus.NOT_FOUND), assetController.get(id).block())
+    }
+
+    @Test
+    fun `should return the user with status 200 when the user is found`() {
+        val assetController = AssetController(assetService)
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+        val id = asset.id.toString()
+
+        whenever(assetService.get(id)).thenReturn(Mono.just(asset))
+
+        val response = assetController.get(id).block()
+
+        assertEquals(asset, response?.body)
+        assertEquals(HttpStatus.OK, response?.statusCode)
+    }
 }
