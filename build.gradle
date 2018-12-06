@@ -13,6 +13,10 @@ buildscript {
 	}
 }
 
+plugins{
+	id 'jacoco'
+}
+
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-spring'
 apply plugin: 'eclipse'
@@ -61,6 +65,12 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
 	classpath = configurations.ktlint
 	main = "com.github.shyiko.ktlint.Main"
 	args "-F", "src/**/*.kt"
+}
+
+jacocoTestReport{
+	reports{
+		html.setDestination(new File("${buildDir}/jacoco"))
+	}
 }
 
 
