@@ -81,4 +81,51 @@ class AssetServiceTest {
 
         assertEquals(asset, assetService.get(asset.id.toString()).block())
     }
+
+    @Test
+    fun `should return true if the asset patch is successful`() {
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+        val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "A different Category")
+        val assetService = AssetService(assetRepository)
+
+        whenever(assetRepository.findById(asset.id)).thenReturn(asset.toMono())
+        whenever(assetRepository.save(newAsset)).thenReturn(newAsset.toMono())
+
+        assertTrue(assetService.patch(asset.id.toString(), newAsset).block()!!)
+    }
+
+    @Test
+    fun `should return false if the asset patch fails to update the asset`() {
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+        val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "A different Category")
+        val assetService = AssetService(assetRepository)
+
+        whenever(assetRepository.findById(asset.id)).thenReturn(asset.toMono())
+        whenever(assetRepository.save(newAsset)).thenReturn(asset.toMono())
+
+        assertFalse(assetService.patch(asset.id.toString(), newAsset).block()!!)
+    }
+
+    @Test
+    fun `should return false if the asset patch fails to fetch the asset`() {
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+        val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "A different Category")
+        val assetService = AssetService(assetRepository)
+
+        whenever(assetRepository.findById(asset.id)).thenReturn(Mono.empty())
+
+        assertFalse(assetService.patch(asset.id.toString(), newAsset).block()!!)
+    }
 }
