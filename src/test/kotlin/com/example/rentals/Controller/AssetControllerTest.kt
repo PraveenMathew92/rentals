@@ -11,6 +11,7 @@ import org.mockito.Mockito.verify
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 import java.util.UUID
 
 internal class AssetControllerTest {
@@ -57,7 +58,7 @@ internal class AssetControllerTest {
     }
 
     @Test
-    fun `should return 404 when the user is not found in the database`() {
+    fun `should return the status 404 when the asset is not found in the database`() {
         val assetController = AssetController(assetService)
         val id = "65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"
 
@@ -67,7 +68,7 @@ internal class AssetControllerTest {
     }
 
     @Test
-    fun `should return the user with status 200 when the user is found`() {
+    fun `should return status 200 when the asset is found`() {
         val assetController = AssetController(assetService)
         val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Some Asset",
@@ -80,5 +81,41 @@ internal class AssetControllerTest {
 
         assertEquals(asset, response?.body)
         assertEquals(HttpStatus.OK, response?.statusCode)
+    }
+
+    @Test
+    fun `should return the status 204 when the patch is successful`() {
+        val assetController = AssetController(assetService)
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+        val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Changed Category")
+        val id = asset.id.toString()
+
+        whenever(assetService.patch(id, newAsset)).thenReturn(true.toMono())
+
+        val response = assetController.patch(id, newAsset).block()
+
+        assertEquals(HttpStatus.NO_CONTENT, response?.statusCode)
+    }
+
+    @Test
+    fun `should return the status 404 when the asset to patch is successful`() {
+        val assetController = AssetController(assetService)
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+        val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Changed Category")
+        val id = asset.id.toString()
+
+        whenever(assetService.patch(id, newAsset)).thenReturn(false.toMono())
+
+        val response = assetController.patch(id, newAsset).block()
+
+        assertEquals(HttpStatus.NOT_FOUND, response?.statusCode)
     }
 }

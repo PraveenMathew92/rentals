@@ -4,12 +4,13 @@ import com.example.rentals.domain.Asset
 import com.example.rentals.service.AssetService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PatchMapping
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
@@ -30,5 +31,15 @@ class AssetController(private val assetService: AssetService) {
                 .get(id)
                 .map { ResponseEntity<Asset>(it, HttpStatus.OK) }
                 .switchIfEmpty(ResponseEntity<Asset>(HttpStatus.NOT_FOUND).toMono())
+    }
+
+    @PatchMapping("/{id}")
+    fun patch(@PathVariable id: String, @RequestBody newAsset: Asset): Mono<ResponseEntity<Asset>> {
+        return assetService.patch(id, newAsset).map {
+            when (it) {
+                true -> ResponseEntity<Asset>(HttpStatus.NO_CONTENT)
+                else -> ResponseEntity<Asset>(HttpStatus.NOT_FOUND)
+            }
+        }
     }
 }
