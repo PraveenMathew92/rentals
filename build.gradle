@@ -67,12 +67,39 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
 	args "-F", "src/**/*.kt"
 }
 
+test {
+	jacoco {
+		destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+		classDumpDir = file("$buildDir/jacoco/classpathdumps")
+	}
+}
+
 jacocoTestReport{
 	reports{
 		html.setDestination(new File("${buildDir}/jacoco"))
 	}
 }
 
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			excludes = [
+					"com.example.rentals.domain.*",
+					"com.example.rentals"
+			]
+			limit {
+				minimum = 0.5
+			}
+		}
+	}
+}
+
+build.dependsOn(jacocoTestCoverageVerification)
+
+task applicationCodeCoverageReport(type:JacocoReport) {
+	executionData build
+	sourceSets sourceSets.main
+}
 
 dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-data-cassandra-reactive')
