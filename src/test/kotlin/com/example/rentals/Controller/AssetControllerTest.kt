@@ -102,7 +102,7 @@ internal class AssetControllerTest {
     }
 
     @Test
-    fun `should return the status 404 when the asset to patch is successful`() {
+    fun `should return the status 404 when the asset to patch is unsuccessful`() {
         val assetController = AssetController(assetService)
         val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Some Asset",
@@ -115,6 +115,36 @@ internal class AssetControllerTest {
         whenever(assetService.patch(id, newAsset)).thenReturn(false.toMono())
 
         val response = assetController.patch(id, newAsset).block()
+
+        assertEquals(HttpStatus.NOT_FOUND, response?.statusCode)
+    }
+
+    @Test
+    fun `should return the status 204 when the delete is successful`() {
+        val assetController = AssetController(assetService)
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+        val id = asset.id.toString()
+
+        whenever(assetService.delete(id)).thenReturn(true.toMono())
+
+        val response = assetController.delete(id).block()
+
+        assertEquals(HttpStatus.NO_CONTENT, response?.statusCode)
+    }
+
+    @Test
+    fun `should return the status 404 when the delete is unsuccessful`() {
+        val assetController = AssetController(assetService)
+        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+                "Some Asset",
+                "Category")
+        val id = asset.id.toString()
+
+        whenever(assetService.delete(id)).thenReturn(false.toMono())
+
+        val response = assetController.delete(id).block()
 
         assertEquals(HttpStatus.NOT_FOUND, response?.statusCode)
     }
