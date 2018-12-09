@@ -26,4 +26,14 @@ class AssetService(private val assetRepository: AssetRepository) {
                 .flatMap { it -> (it == newAsset).toMono() }
                 .switchIfEmpty(false.toMono())
     }
+
+    fun delete(id: String): Mono<Boolean> {
+        return with(assetRepository) {
+            findById(UUIDorNil(id))
+                    .flatMap { deleteById(UUIDorNil(id))
+                            .then(true.toMono())
+                    }
+        }
+                .defaultIfEmpty(false)
+    }
 }
