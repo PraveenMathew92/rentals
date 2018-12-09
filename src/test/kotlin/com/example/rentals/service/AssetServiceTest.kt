@@ -4,10 +4,11 @@ package com.example.rentals.service
 
 import com.example.rentals.domain.Asset
 import com.example.rentals.repository.AssetRepository
+import com.nhaarman.mockitokotlin2.whenever
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -133,5 +134,14 @@ class AssetServiceTest {
         val assetService = AssetService(assetRepository)
 
         assertFalse(assetService.delete(asset.id.toString()).block()!!)
+    }
+
+    @Test
+    fun `should not create an asset and return false if the key exists`() {
+        whenever(assetRepository.existsById(asset.id)).thenReturn(true.toMono())
+        val assetService = AssetService(assetRepository)
+
+        assertFalse(assetService.create(asset).block()!!)
+        verify(assetRepository, never()).save(asset)
     }
 }
