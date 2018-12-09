@@ -45,7 +45,7 @@ internal class AssetControllerTest {
     }
 
     @Test
-    fun `should return the status 422 when the save is unsuccessful`() {
+    fun `should return the status 409 when the save is unsuccessful`() {
         val assetController = AssetController(assetService)
 
         val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
@@ -54,7 +54,7 @@ internal class AssetControllerTest {
 
         whenever(assetService.create(asset)).thenReturn(Mono.just(false))
 
-        assertEquals(ResponseEntity<Asset>(HttpStatus.UNPROCESSABLE_ENTITY), assetController.create(asset).block())
+        assertEquals(ResponseEntity<Asset>(HttpStatus.CONFLICT), assetController.create(asset).block())
     }
 
     @Test

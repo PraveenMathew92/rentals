@@ -23,7 +23,7 @@ class AssetController(private val assetService: AssetService) {
         return assetService
                 .create(asset)
                 .map { it -> if (it) ResponseEntity(asset, HttpStatus.CREATED)
-                    else ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY) }
+                    else ResponseEntity(HttpStatus.CONFLICT) }
     }
 
     @GetMapping("/{id}")
