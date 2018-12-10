@@ -1,0 +1,10 @@
+image: openjdk:8-jdk
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - ./gradlew clean build 
