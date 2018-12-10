@@ -11,12 +11,13 @@ import reactor.core.publisher.toMono
 class AssetService(private val assetRepository: AssetRepository) {
     fun create(asset: Asset): Mono<Boolean> {
         return with(assetRepository) {
-            existsById(asset.id).flatMap { it ->
+            existsById(asset.id).map { it ->
                 when (it) {
-                    false -> { save(asset).map { it == asset } }
+                    false -> save(asset).map { it == asset }
                     else -> false.toMono()
                 }
             }
+            .flatMap { it }
         }
     }
 

@@ -4,11 +4,7 @@ package com.example.rentals.service
 
 import com.example.rentals.domain.Asset
 import com.example.rentals.repository.AssetRepository
-import com.nhaarman.mockitokotlin2.whenever
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -21,27 +17,27 @@ import java.util.UUID
 class AssetServiceTest {
     private val assetRepository: AssetRepository = mock()
 
-    private val asset: Asset by lazy {
-        val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+    private val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Some Asset",
                 "Category")
-        asset
-    }
 
     @Test
     fun `should call the save method of repository to create a new asset`() {
         val assetService = AssetService(assetRepository)
 
-        whenever(assetRepository.save(asset)).thenReturn(Mono.just(asset))
+        val captor = argumentCaptor<Asset> {
+            whenever(assetRepository.save(capture())).thenReturn(Mono.just(asset))
+        }
+        whenever(assetRepository.existsById(asset.id)).thenReturn(false.toMono())
 
-        assetService.create(asset)
-
-        verify(assetRepository).save(asset)
+        assetService.create(asset).block()
+        assertEquals(asset, captor.firstValue)
     }
 
     @Test
     fun `should return true when the asset is saved`() {
         whenever(assetRepository.save(asset)).thenReturn(Mono.just(asset))
+        whenever(assetRepository.existsById(asset.id)).thenReturn(false.toMono())
 
         val assetService = AssetService(assetRepository)
 
@@ -54,6 +50,7 @@ class AssetServiceTest {
                 "Some Asset",
                 "Category")
         whenever(assetRepository.save(asset)).thenReturn(Mono.just(anotherAsset))
+        whenever(assetRepository.existsById(asset.id)).thenReturn(false.toMono())
 
         val assetService = AssetService(assetRepository)
 
