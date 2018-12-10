@@ -1,10 +1,13 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.rentals.service
 
 import com.example.rentals.domain.Asset
 import com.example.rentals.repository.AssetRepository
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.never
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
