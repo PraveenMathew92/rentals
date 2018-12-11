@@ -18,4 +18,10 @@ class CustomerController(val customerService: CustomerService) {
             }
         }
     }
+
+    fun get(email: String): Mono<ResponseEntity<Customer>> {
+        return customerService.get(email)
+                .map { ResponseEntity(it, HttpStatus.OK) }
+                .switchIfEmpty(ResponseEntity<Customer>(HttpStatus.NOT_FOUND).toMono())
+    }
 }

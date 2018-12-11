@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
 class CustomerControllerTest{
@@ -30,5 +31,20 @@ class CustomerControllerTest{
         customerController.create(customer).subscribe{
             assertEquals(ResponseEntity<Customer>(HttpStatus.CONFLICT), it)
         }
+    }
+
+    @Test
+    fun `should return 200 and the customer if the customer is present in the database`() {
+        whenever(customerService.get(customer.email)).thenReturn(customer.toMono())
+        customerController.get(customer.email).subscribe{
+            assertEquals(ResponseEntity(customer, HttpStatus.OK), it)
+        }
+    }
+
+    @Test
+    fun `should return 404 if the customer is not present in the database`() {
+        whenever(customerService.get(customer.email)).thenReturn(Mono.empty())
+        val response = customerController.get(customer.email).block()!!
+        assertEquals(ResponseEntity<Customer>(HttpStatus.NOT_FOUND), response)
     }
 }
