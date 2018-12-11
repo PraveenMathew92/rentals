@@ -7,10 +7,10 @@ import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
 @Service
-class CustomerService(val customerRepository: CustomerRepository){
+class CustomerService(val customerRepository: CustomerRepository) {
     fun create(customer: Customer): Mono<Boolean> {
-        return with(customerRepository){
-            existsById(customer.email).flatMap {it ->
+        return with(customerRepository) {
+            existsById(customer.email).flatMap { it ->
                 when (it) {
                     false -> save(customer).map { (it == customer) }
                     else -> false.toMono()

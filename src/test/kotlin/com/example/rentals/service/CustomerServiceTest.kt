@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.toMono
 
-class CustomerServiceTest{
+class CustomerServiceTest {
     private val customerRepository = mock<CustomerRepository>()
     private val customer = Customer("test@email.com", "John Doe", 1234567890)
 
@@ -23,7 +23,7 @@ class CustomerServiceTest{
         }
         whenever(customerRepository.existsById(customer.email)).thenReturn(false.toMono())
 
-        customerService.create(customer).subscribe{
+        customerService.create(customer).subscribe {
             Assert.assertEquals(customer, captor.firstValue)
         }
     }
@@ -34,7 +34,7 @@ class CustomerServiceTest{
 
         whenever(customerRepository.existsById(customer.email)).thenReturn(true.toMono())
 
-        customerService.create(customer).subscribe{
+        customerService.create(customer).subscribe {
             assertFalse(it)
         }
     }
@@ -46,7 +46,7 @@ class CustomerServiceTest{
 
         val customerService = CustomerService(customerRepository)
 
-        customerService.create(customer).subscribe{
+        customerService.create(customer).subscribe {
             Assert.assertTrue(it)
         }
     }
@@ -57,7 +57,7 @@ class CustomerServiceTest{
 
         val customerService = CustomerService(customerRepository)
 
-        customerService.get(customer.email).subscribe{
+        customerService.get(customer.email).subscribe {
             Assert.assertEquals(it, customer)
         }
     }
