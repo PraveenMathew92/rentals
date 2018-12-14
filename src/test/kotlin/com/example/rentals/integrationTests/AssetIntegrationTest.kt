@@ -17,11 +17,11 @@ import java.util.UUID
 @SpringBootTest
 class AssetIntegrationTest {
     val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+            "Swift Dzire",
+            mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "7 km per liter")))
+    val assetWithLesserQuality = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
             "Some Asset",
-            "Category")
-    val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
-            "Some Asset",
-            "New Category")
+            mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "5 km per liter")))
 
     @Autowired
     lateinit var context: ApplicationContext
@@ -57,7 +57,7 @@ class AssetIntegrationTest {
     fun `should patch the asset`() {
         client.patch().uri("/asset/65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(newAsset), Asset::class.java)
+                .body(Mono.just(assetWithLesserQuality), Asset::class.java)
                 .exchange()
                 .expectStatus().isNoContent
                 .expectBody(Asset::class.java)
@@ -74,7 +74,7 @@ class AssetIntegrationTest {
     fun `should return 404 if the asset is not found`() {
         client.patch().uri("/asset/752f3c7c-f449-4ea4-85e1-ad61dd2dbf53")
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(newAsset), Asset::class.java)
+                .body(Mono.just(assetWithLesserQuality), Asset::class.java)
                 .exchange()
                 .expectStatus().isNotFound
     }

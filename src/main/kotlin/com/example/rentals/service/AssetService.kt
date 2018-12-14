@@ -28,7 +28,7 @@ class AssetService(private val assetRepository: AssetRepository) {
     fun patch(id: String, newAsset: Asset): Mono<Boolean> {
         return with(assetRepository) {
             findById(UUIDorNil(id))
-                    .flatMap { save(newAsset) } }
+                .flatMap { save(newAsset) } }
                 .flatMap { it -> (it == newAsset).toMono() }
                 .switchIfEmpty(false.toMono())
     }
