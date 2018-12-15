@@ -1,11 +1,14 @@
 package com.example.rentals
 
+import com.example.rentals.converter.CategoryToJSONConverter
+import com.example.rentals.converter.JSONToCategoryConverter
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.cassandra.config.AbstractReactiveCassandraConfiguration
 import org.springframework.data.cassandra.config.CassandraClusterFactoryBean
 import org.springframework.data.cassandra.config.SchemaAction
 import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification
 import org.springframework.data.cassandra.repository.config.EnableReactiveCassandraRepositories
+import org.springframework.data.convert.CustomConversions
 
 @Configuration
 @EnableReactiveCassandraRepositories
@@ -13,6 +16,13 @@ class ReactiveCassandraConfiguration : AbstractReactiveCassandraConfiguration() 
     private val KEYSPACE_NAME = "rentals"
 
     override fun getKeyspaceName(): String = KEYSPACE_NAME
+
+    override fun customConversions(): CustomConversions {
+        return CustomConversions(
+                CustomConversions.StoreConversions.NONE,
+                listOf(JSONToCategoryConverter(), CategoryToJSONConverter())
+        )
+    }
 
     override fun cluster(): CassandraClusterFactoryBean {
         val cluster = super.cluster()

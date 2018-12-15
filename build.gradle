@@ -87,10 +87,10 @@ jacocoTestCoverageVerification {
 		rule {
 			excludes = [
 					"com.example.rentals.domain.*",
-					"com.example.rentals"
+					"com.example.rentals.[A-Za-z]*.kt"
 			]
 			limit {
-				minimum = 0.5
+				minimum = 0.4
 			}
 		}
 	}
