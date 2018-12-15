@@ -1,6 +1,7 @@
 package com.example.rentals.integrationTests
 
 import com.example.rentals.domain.Asset
+import com.example.rentals.domain.CategoryFields
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,12 +19,14 @@ import java.util.UUID
 class AssetIntegrationTest {
     val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
             "Swift Dzire",
-            mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "7 km per liter")))
-    val assetWithLesserQuality = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+            CategoryFields("Maruti Suzuki", "Vxi", "5 Seater")
+    )
+            val assetWithCorrectedType = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
             "Some Asset",
-            mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "5 km per liter")))
+                    CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+            )
 
-    @Autowired
+                    @Autowired
     lateinit var context: ApplicationContext
 
     lateinit var client: WebTestClient
@@ -57,7 +60,7 @@ class AssetIntegrationTest {
     fun `should patch the asset`() {
         client.patch().uri("/asset/65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(assetWithLesserQuality), Asset::class.java)
+                .body(Mono.just(assetWithCorrectedType), Asset::class.java)
                 .exchange()
                 .expectStatus().isNoContent
                 .expectBody(Asset::class.java)
@@ -74,7 +77,7 @@ class AssetIntegrationTest {
     fun `should return 404 if the asset is not found`() {
         client.patch().uri("/asset/752f3c7c-f449-4ea4-85e1-ad61dd2dbf53")
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(assetWithLesserQuality), Asset::class.java)
+                .body(Mono.just(assetWithCorrectedType), Asset::class.java)
                 .exchange()
                 .expectStatus().isNotFound
     }

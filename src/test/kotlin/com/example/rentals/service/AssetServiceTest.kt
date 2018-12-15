@@ -1,6 +1,7 @@
 package com.example.rentals.service
 
 import com.example.rentals.domain.Asset
+import com.example.rentals.domain.CategoryFields
 import com.example.rentals.repository.AssetRepository
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.argumentCaptor
@@ -22,7 +23,8 @@ class AssetServiceTest {
 
     private val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Swift Dzire",
-                mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "7 km per liter")))
+            CategoryFields("Maruti Suzuki", "Vxi", "5 Seater")
+    )
 
     @Test
     fun `should call the save method of repository to create a new asset`() {
@@ -51,8 +53,9 @@ class AssetServiceTest {
     fun `should return false when the asset save is not saved`() {
         val anotherAsset = Asset(UUID.fromString("752f3c7c-f449-4ea4-85e1-ad61dd2dbf53"),
                 "Scorpio",
-                mapOf(Pair("Maker", "Mahindra"), Pair("Type", "S5"), Pair("Size", "7 Seater"), Pair("Quality", "10 km per liter")))
-        whenever(assetRepository.save(asset)).thenReturn(Mono.just(anotherAsset))
+                CategoryFields("Maruti Suzuki", "Lxi", "7 Seater")
+        )
+                        whenever(assetRepository.save(asset)).thenReturn(Mono.just(anotherAsset))
         whenever(assetRepository.existsById(asset.id)).thenReturn(false.toMono())
 
         val assetService = AssetService(assetRepository)
@@ -83,8 +86,10 @@ class AssetServiceTest {
     fun `should return true if the asset patch is successful`() {
         val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Swift Dzire",
-                mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "5 km per liter")))
-        val assetService = AssetService(assetRepository)
+                CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+
+        )
+                val assetService = AssetService(assetRepository)
 
         whenever(assetRepository.findById(asset.id)).thenReturn(asset.toMono())
         whenever(assetRepository.save(newAsset)).thenReturn(newAsset.toMono())
@@ -96,8 +101,9 @@ class AssetServiceTest {
     fun `should return false if the asset patch fails to update the asset`() {
         val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Swift Dzire",
-                mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "5 km per liter")))
-        val assetService = AssetService(assetRepository)
+                CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+        )
+                val assetService = AssetService(assetRepository)
 
         whenever(assetRepository.findById(asset.id)).thenReturn(asset.toMono())
         whenever(assetRepository.save(newAsset)).thenReturn(asset.toMono())
@@ -109,8 +115,9 @@ class AssetServiceTest {
     fun `should return false if the asset patch fails to fetch the asset`() {
         val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Swift Dzire",
-                mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "7 km per liter")))
-        val assetService = AssetService(assetRepository)
+                CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+        )
+                val assetService = AssetService(assetRepository)
 
         whenever(assetRepository.findById(asset.id)).thenReturn(Mono.empty())
 

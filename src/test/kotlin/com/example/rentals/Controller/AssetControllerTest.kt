@@ -2,6 +2,7 @@ package com.example.rentals.controller
 
 import com.example.rentals.service.AssetService
 import com.example.rentals.domain.Asset
+import com.example.rentals.domain.CategoryFields
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -18,8 +19,8 @@ internal class AssetControllerTest {
     private val assetService = Mockito.mock(AssetService::class.java)
     private val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
             "Swift Dzire",
-            mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "7 km per liter")))
-
+            CategoryFields("Maruti Suzuki", "Vxi", "5 Seater")
+    )
     @Test
     fun `should add the asset passed in the request to database`() {
         val assetController = AssetController(assetService)
@@ -77,8 +78,10 @@ internal class AssetControllerTest {
         val assetController = AssetController(assetService)
         val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Some Asset",
-                mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "5 km per liter")))
-        val id = asset.id.toString()
+                CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+
+        )
+                val id = asset.id.toString()
 
         whenever(assetService.patch(id, newAsset)).thenReturn(true.toMono())
 
@@ -92,8 +95,10 @@ internal class AssetControllerTest {
         val assetController = AssetController(assetService)
         val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
                 "Some Asset",
-                mapOf(Pair("Maker", "Maruti Suzuki"), Pair("Type", "Vxi"), Pair("Size", "5 Seater"), Pair("Quality", "5 km per liter")))
-        val id = asset.id.toString()
+                CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+
+        )
+                val id = asset.id.toString()
 
         whenever(assetService.patch(id, newAsset)).thenReturn(false.toMono())
 
