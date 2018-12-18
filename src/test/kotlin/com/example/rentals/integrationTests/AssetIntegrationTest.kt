@@ -12,6 +12,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 import java.util.UUID
 
 @RunWith(SpringRunner::class)
@@ -22,11 +23,11 @@ class AssetIntegrationTest {
             CategoryFields("Maruti Suzuki", "Vxi", "5 Seater")
     )
             val assetWithCorrectedType = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
-            "Some Asset",
+            "Swift",
                     CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
             )
 
-                    @Autowired
+    @Autowired
     lateinit var context: ApplicationContext
 
     lateinit var client: WebTestClient
@@ -40,34 +41,26 @@ class AssetIntegrationTest {
     }
 
     @Test
-    fun `should create an asset`() {
+    fun `test CRUD`() {
         client.post().uri("/asset")
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(asset), Asset::class.java)
                 .exchange()
                 .expectStatus().isCreated
-    }
 
-    @Test
-    fun `should get the created asset`() {
         client.get().uri("/asset/65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
                 .exchange()
                 .expectStatus().isOk
                 .expectBody(Asset::class.java)
-    }
 
-    @Test
-    fun `should patch the asset`() {
         client.patch().uri("/asset/65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(assetWithCorrectedType), Asset::class.java)
+                .body("[{\"op\": \"replace\", \"path\":\"name\", \"value\": \"Swift\"}]".toMono(),
+                        String::class.java)
                 .exchange()
                 .expectStatus().isNoContent
                 .expectBody(Asset::class.java)
-    }
 
-    @Test
-    fun `should delete the asset`() {
         client.delete().uri("/asset/65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
                 .exchange()
                 .expectStatus().isNoContent
