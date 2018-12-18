@@ -76,16 +76,12 @@ internal class AssetControllerTest {
     @Test
     fun `should return the status 204 when the patch is successful`() {
         val assetController = AssetController(assetService)
-        val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
-                "Some Asset",
-                CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+        val patch = "[{\"op\": \"replace\", \"path\":\"category/type\", \"value\": \"Lxi\"}]"
+        val id = asset.id.toString()
 
-        )
-                val id = asset.id.toString()
+        whenever(assetService.patch(id, patch)).thenReturn(true.toMono())
 
-        whenever(assetService.patch(id, newAsset)).thenReturn(true.toMono())
-
-        val response = assetController.patch(id, newAsset).block()
+        val response = assetController.patch(id, patch).block()
 
         assertEquals(HttpStatus.NO_CONTENT, response?.statusCode)
     }
@@ -93,16 +89,12 @@ internal class AssetControllerTest {
     @Test
     fun `should return the status 404 when the asset to patch is unsuccessful`() {
         val assetController = AssetController(assetService)
-        val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
-                "Some Asset",
-                CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+        val patch = "[{\"op\": \"replace\", \"path\":\"category/type\", \"value\": \"Lxi\"}]"
+        val id = asset.id.toString()
 
-        )
-                val id = asset.id.toString()
+        whenever(assetService.patch(id, patch)).thenReturn(false.toMono())
 
-        whenever(assetService.patch(id, newAsset)).thenReturn(false.toMono())
-
-        val response = assetController.patch(id, newAsset).block()
+        val response = assetController.patch(id, patch).block()
 
         assertEquals(HttpStatus.NOT_FOUND, response?.statusCode)
     }

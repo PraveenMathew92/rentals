@@ -35,8 +35,8 @@ class AssetController(private val assetService: AssetService) {
     }
 
     @PatchMapping("/{id}")
-    fun patch(@PathVariable id: String, @RequestBody newAsset: Asset): Mono<ResponseEntity<Asset>> {
-        return assetService.patch(id, newAsset).map {
+    fun patch(@PathVariable id: String, @RequestBody patch: String): Mono<ResponseEntity<Asset>> {
+        return assetService.patch(id, patch).map {
             when (it) {
                 true -> ResponseEntity<Asset>(HttpStatus.NO_CONTENT)
                 else -> ResponseEntity<Asset>(HttpStatus.NOT_FOUND)

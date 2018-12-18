@@ -5,4 +5,8 @@ import org.springframework.data.cassandra.core.mapping.Table
 import java.util.UUID
 
 @Table
-data class Asset(@PrimaryKey val id: UUID, val name: String, val category: CategoryFields)
+data class Asset(
+    @PrimaryKey val id: UUID = UUID(0, 0),
+    val name: String = "",
+    val category: CategoryFields = CategoryFields("", "", "")
+)
