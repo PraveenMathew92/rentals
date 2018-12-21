@@ -13,7 +13,7 @@ import reactor.core.publisher.toMono
 
 class CustomerServiceTest {
     private val customerRepository = mock<CustomerRepository>()
-    private val customer = Customer("test@email.com", "John Doe", "1234567890")
+    private val customer = Customer("test@email.com", "John Doe", 1234567890)
 
     @Test
     fun `should create a customer in the database`() {

@@ -14,7 +14,7 @@ import reactor.core.publisher.toMono
 class CustomerControllerTest {
 
     private val customerService = mock<CustomerService>()
-    private val customer = Customer("test@email.com", "John Doe", "123457890")
+    private val customer = Customer("test@email.com", "John Doe", 1234567890)
     private val customerController = CustomerController(customerService)
 
     @Test

@@ -28,19 +28,8 @@ class CustomerIntegrationTest {
     }
 
     @Test
-    fun `should throw 400 if the contact number is less than 10`() {
-        val customer = Customer("email@test.com", "Test", "123")
-        client.post()
-                .uri("/customer")
-                .body(Mono.just(customer), Customer::class.java)
-                .exchange()
-                .expectStatus()
-                .isBadRequest
-    }
-
-    @Test
     fun `should throw 400 if the email is invalid`() {
-        val customer = Customer("emailtest.com", "Test", "1234567890")
+        val customer = Customer("emailtest.com", "Test", 1234567890)
         client.post()
                 .uri("/customer")
                 .body(Mono.just(customer), Customer::class.java)
