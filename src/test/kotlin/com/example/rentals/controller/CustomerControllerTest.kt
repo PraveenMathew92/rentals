@@ -18,10 +18,10 @@ class CustomerControllerTest {
     private val customerController = CustomerController(customerService)
 
     @Test
-    fun `should return 200 if the customer is saved in the database`() {
+    fun `should return 201 if the customer is saved in the database`() {
         whenever(customerService.create(customer)).thenReturn(true.toMono())
         customerController.create(customer).subscribe {
-            assertEquals(ResponseEntity<Customer>(HttpStatus.OK), it)
+            assertEquals(ResponseEntity<Customer>(HttpStatus.CREATED), it)
         }
     }
 
