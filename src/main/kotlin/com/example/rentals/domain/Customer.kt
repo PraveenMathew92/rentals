@@ -1,5 +1,12 @@
 package com.example.rentals.domain
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey
+import org.springframework.data.cassandra.core.mapping.Table
+import javax.validation.constraints.Pattern
 
-class Customer(@PrimaryKey val email: String, val name: String, val contact: Int)
+@Table
+class Customer(
+    @PrimaryKey val email: String,
+    val name: String,
+    @field:Pattern(regexp = "\\d{10}", message = "Contact should be of ten digits") val contact: String
+)
