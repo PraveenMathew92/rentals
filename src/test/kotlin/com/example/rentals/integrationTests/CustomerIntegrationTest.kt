@@ -9,7 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.body
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -36,5 +38,37 @@ class CustomerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .isBadRequest
+    }
+
+    @Test
+    fun `basic CRUD`() {
+        val customer = Customer("email@test.com", "Test", 1234567890)
+
+        client.post()
+                .uri("/customer")
+                .body(Mono.just(customer), Customer::class.java)
+                .exchange()
+                .expectStatus()
+                .isCreated
+
+        client.get()
+                .uri("/customer/email@test.com")
+                .exchange()
+                .expectStatus().isOk
+                .expectBody(Customer::class.java)
+
+        client.patch()
+                .uri("/customer/email@test.com")
+                .body("[{\"op\": \"replace\", \"path\":\"contact\", \"value\": \"1234098765\"}]".toMono(),
+                        String::class.java)
+                .exchange()
+                .expectStatus().isNoContent
+                .expectBody(Customer::class.java)
+
+        client.delete()
+                .uri("/customer/email@test.com")
+                .exchange()
+                .expectStatus()
+                .isNoContent
     }
 }
