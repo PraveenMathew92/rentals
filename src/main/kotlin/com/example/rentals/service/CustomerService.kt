@@ -39,7 +39,7 @@ class CustomerService(val customerRepository: CustomerRepository) {
     fun patch(email: String, patch: String): Mono<Boolean> {
         val mapper = ObjectMapper()
         return get(email)
-                .flatMap { mapper.readValue(
+                .flatMap { it -> mapper.readValue(
                         JsonPatch.apply(stringToJsonNode(patch),
                                 stringToJsonNode(mapper.writeValueAsString(it)))
                                 .toString(),

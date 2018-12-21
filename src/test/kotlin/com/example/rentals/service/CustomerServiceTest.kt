@@ -99,7 +99,7 @@ class CustomerServiceTest {
         whenever(customerRepository.findById(customer.email)).thenReturn(customer.toMono())
         whenever(customerRepository.save(captor.capture())).thenReturn(updatedCustomer.toMono())
 
-        customerService.patch(customer.email, patch).map {
+        customerService.patch(customer.email, patch).subscribe {
             Assert.assertTrue(it)
             assertEquals(captor.lastValue, updatedCustomer)
         }
@@ -112,7 +112,7 @@ class CustomerServiceTest {
 
         whenever(customerRepository.findById(customer.email)).thenReturn(Mono.empty())
 
-        customerService.patch(customer.email, patch).map {
+        customerService.patch(customer.email, patch).subscribe {
             Assert.assertFalse(it)
         }
     }
@@ -124,9 +124,9 @@ class CustomerServiceTest {
         val updatedCustomer = Customer("test@email.com", "John Doe", 1234098765)
 
         whenever(customerRepository.findById(customer.email)).thenReturn(customer.toMono())
-        whenever(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer.toMono())
+        whenever(customerRepository.save(updatedCustomer)).thenReturn(Mono.empty())
 
-        customerService.patch(customer.email, patch).map {
+        customerService.patch(customer.email, patch).subscribe {
             Assert.assertFalse(it)
         }
     }
