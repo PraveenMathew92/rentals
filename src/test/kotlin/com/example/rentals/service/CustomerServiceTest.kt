@@ -78,13 +78,53 @@ class CustomerServiceTest {
     }
 
     @Test
-    fun `should return false if the  the customer from database if present`() {
+    fun `should return false if the customer to be deleted is not present in the database`() {
         whenever(customerRepository.findById(customer.email)).thenReturn(Mono.empty())
 
         val customerService = CustomerService(customerRepository)
 
         customerService.delete(customer.email).subscribe {
             Assert.assertEquals(it, false)
+        }
+    }
+
+    @Test
+    fun `should return true if the customer patch is successful`() {
+        val patch = "[{\"op\": \"replace\", \"path\":\"contact\", \"value\": \"1234098765\"}]"
+        val updatedCustomer = Customer("test@email.com", "John Doe", 1234098765)
+        val customerService = CustomerService(customerRepository)
+
+        whenever(customerRepository.findById(customer.email)).thenReturn(customer.toMono())
+        whenever(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer.toMono())
+
+        customerService.patch(customer.email, patch).map {
+            Assert.assertTrue(it)
+        }
+    }
+
+    @Test
+    fun `should return false if the customer to be patched is not found`() {
+        val patch = "[{\"op\": \"replace\", \"path\":\"contact\", \"value\": \"1234098765\"}]"
+        val customerService = CustomerService(customerRepository)
+
+        whenever(customerRepository.findById(customer.email)).thenReturn(Mono.empty())
+
+        customerService.patch(customer.email, patch).map {
+            Assert.assertFalse(it)
+        }
+    }
+
+    @Test
+    fun `should return false if the patch fails`() {
+        val patch = "[{\"op\": \"replace\", \"path\":\"contact\", \"value\": \"1234098765\"}]"
+        val customerService = CustomerService(customerRepository)
+        val updatedCustomer = Customer("test@email.com", "John Doe", 1234098765)
+
+        whenever(customerRepository.findById(customer.email)).thenReturn(customer.toMono())
+        whenever(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer.toMono())
+
+        customerService.patch(customer.email, patch).map {
+            Assert.assertFalse(it)
         }
     }
 }
