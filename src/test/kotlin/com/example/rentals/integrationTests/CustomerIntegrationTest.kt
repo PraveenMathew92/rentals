@@ -33,4 +33,20 @@ class CustomerIntegrationTest {
                 .expectStatus()
                 .isBadRequest
     }
+
+    @Test
+    fun `should throw 400 if the email is invalid`() {
+        client = WebTestClient
+                .bindToApplicationContext(context)
+                .configureClient()
+                .build()
+
+        val customer = Customer("emailtest.com", "Test", "1234567890")
+        client.post()
+                .uri("/customer")
+                .body(Mono.just(customer), Customer::class.java)
+                .exchange()
+                .expectStatus()
+                .isBadRequest
+    }
 }
