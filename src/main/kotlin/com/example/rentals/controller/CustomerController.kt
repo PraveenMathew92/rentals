@@ -4,9 +4,7 @@ import com.example.rentals.domain.Customer
 import com.example.rentals.service.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 import javax.validation.Valid
@@ -22,9 +20,19 @@ class CustomerController(val customerService: CustomerService) {
         }
     }
 
+    @GetMapping("/{email}")
     fun get(email: String): Mono<ResponseEntity<Customer>> {
         return customerService.get(email)
                 .map { ResponseEntity(it, HttpStatus.OK) }
                 .switchIfEmpty(ResponseEntity<Customer>(HttpStatus.NOT_FOUND).toMono())
+    }
+
+    @DeleteMapping("/{email}")
+    fun delete(email: String): Mono<ResponseEntity<Customer>> {
+        return customerService.delete(email)
+                .flatMap { when(it){
+                    true -> ResponseEntity<Customer>(HttpStatus.NO_CONTENT).toMono()
+                    else -> ResponseEntity<Customer>(HttpStatus.NOT_FOUND).toMono()
+                } }
     }
 }
