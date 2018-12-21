@@ -20,7 +20,7 @@ class CustomerIntegrationTest {
     lateinit var client: WebTestClient
 
     @Before
-    fun setup(){
+    fun setup() {
         client = WebTestClient
                 .bindToApplicationContext(context)
                 .configureClient()

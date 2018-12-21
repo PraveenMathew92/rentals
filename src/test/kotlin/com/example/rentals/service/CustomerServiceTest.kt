@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Mono
@@ -93,12 +94,14 @@ class CustomerServiceTest {
         val patch = "[{\"op\": \"replace\", \"path\":\"contact\", \"value\": \"1234098765\"}]"
         val updatedCustomer = Customer("test@email.com", "John Doe", 1234098765)
         val customerService = CustomerService(customerRepository)
+        val captor = argumentCaptor<Customer>()
 
         whenever(customerRepository.findById(customer.email)).thenReturn(customer.toMono())
-        whenever(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer.toMono())
+        whenever(customerRepository.save(captor.capture())).thenReturn(updatedCustomer.toMono())
 
         customerService.patch(customer.email, patch).map {
             Assert.assertTrue(it)
+            assertEquals(captor.lastValue, updatedCustomer)
         }
     }
 

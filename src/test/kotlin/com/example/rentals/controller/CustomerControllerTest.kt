@@ -57,7 +57,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    fun `should return 404 if the customer to be deleted is not foound in the database`() {
+    fun `should return 404 if the customer to be deleted is not found in the database`() {
         whenever(customerService.delete(customer.email)).thenReturn(false.toMono())
         customerController.delete(customer.email).subscribe {
             assertEquals(ResponseEntity<Customer>(HttpStatus.NOT_FOUND), it)
