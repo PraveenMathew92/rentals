@@ -8,6 +8,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
+import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
 class CustomerServiceTest {
@@ -59,6 +60,31 @@ class CustomerServiceTest {
 
         customerService.get(customer.email).subscribe {
             Assert.assertEquals(it, customer)
+        }
+    }
+
+    @Test
+    fun `should delete the customer from database if present`() {
+        whenever(customerRepository.findById(customer.email)).thenReturn(customer.toMono())
+        val captor = argumentCaptor<String>()
+        whenever(customerRepository.deleteById(captor.capture())).thenReturn(Mono.create { it.success(null) })
+
+        val customerService = CustomerService(customerRepository)
+
+        customerService.delete(customer.email).subscribe {
+            Assert.assertEquals(it, true)
+            Assert.assertEquals(captor.lastValue, customer.email)
+        }
+    }
+
+    @Test
+    fun `should return false if the  the customer from database if present`() {
+        whenever(customerRepository.findById(customer.email)).thenReturn(Mono.empty())
+
+        val customerService = CustomerService(customerRepository)
+
+        customerService.delete(customer.email).subscribe {
+            Assert.assertEquals(it, false)
         }
     }
 }

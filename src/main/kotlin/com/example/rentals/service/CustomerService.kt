@@ -22,4 +22,14 @@ class CustomerService(val customerRepository: CustomerRepository) {
     fun get(email: String): Mono<Customer> {
         return customerRepository.findById(email)
     }
+
+    fun delete(email: String): Mono<Boolean> {
+        return with(customerRepository) {
+            findById(email)
+                    .flatMap { deleteById(email)
+                            .then(true.toMono())
+                    }
+        }
+                .defaultIfEmpty(false)
+    }
 }
