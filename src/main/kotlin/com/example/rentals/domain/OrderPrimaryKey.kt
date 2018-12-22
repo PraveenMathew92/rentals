@@ -6,7 +6,7 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn
 import java.io.Serializable
 
 @PrimaryKeyClass
-data class OrderPrimaryKey (
-        @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED) val customer: Customer,
-        @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED) val asset: Asset
-        ): Serializable
+data class OrderPrimaryKey(
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED) val customer: Customer,
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED) val asset: Asset
+) : Serializable
