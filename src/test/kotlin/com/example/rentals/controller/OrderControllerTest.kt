@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 import java.util.UUID
 import java.util.Date
@@ -25,7 +26,7 @@ class OrderControllerTest{
         val orderController = OrderController(orderService)
         whenever(orderService.create(order)).thenReturn(true.toMono())
 
-        orderController.create(order).subscribe{
+        orderController.create(order).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.CREATED), it)
         }
     }
@@ -35,7 +36,7 @@ class OrderControllerTest{
         val orderController = OrderController(orderService)
         whenever(orderService.create(order)).thenReturn(false.toMono())
 
-        orderController.create(order).subscribe{
+        orderController.create(order).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.CONFLICT), it)
         }
     }
@@ -45,9 +46,19 @@ class OrderControllerTest{
         val orderController = OrderController(orderService)
         whenever(orderService.get(customer, asset)).thenReturn(order.toMono())
 
-        orderController.get(customer, asset).subscribe{
+        orderController.get(customer, asset).subscribe {
             assertEquals(HttpStatus.OK, it.statusCode)
             assertEquals(order, it.body)
+        }
+    }
+
+    @Test
+    fun `should should return 404 if the order is not found in the database`() {
+        val orderController = OrderController(orderService)
+        whenever(orderService.get(customer, asset)).thenReturn(Mono.empty())
+
+        orderController.get(customer, asset).subscribe {
+            assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
         }
     }
 }

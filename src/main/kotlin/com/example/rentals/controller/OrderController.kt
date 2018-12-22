@@ -19,5 +19,6 @@ class OrderController(val orderService: OrderService){
     fun get(customer: Customer, asset: Asset): Mono<ResponseEntity<Order>> {
         return orderService.get(customer, asset)
                 .map { ResponseEntity(it, HttpStatus.OK) }
+                .defaultIfEmpty(ResponseEntity<Order>(HttpStatus.NOT_FOUND))
     }
 }
