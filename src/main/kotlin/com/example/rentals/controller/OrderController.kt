@@ -1,5 +1,7 @@
 package com.example.rentals.controller
 
+import com.example.rentals.domain.Asset
+import com.example.rentals.domain.Customer
 import com.example.rentals.domain.Order
 import com.example.rentals.service.OrderService
 import org.springframework.http.HttpStatus
@@ -12,5 +14,10 @@ class OrderController(val orderService: OrderService){
             true -> ResponseEntity<Order>(HttpStatus.CREATED)
             else -> ResponseEntity<Order>(HttpStatus.CONFLICT)
         } }
+    }
+
+    fun get(customer: Customer, asset: Asset): Mono<ResponseEntity<Order>> {
+        return orderService.get(customer, asset)
+                .map { ResponseEntity(it, HttpStatus.OK) }
     }
 }

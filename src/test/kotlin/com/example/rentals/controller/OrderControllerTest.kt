@@ -39,4 +39,15 @@ class OrderControllerTest{
             assertEquals(ResponseEntity<Order>(HttpStatus.CONFLICT), it)
         }
     }
+
+    @Test
+    fun `should should return 200 if the order is fetched from the database`() {
+        val orderController = OrderController(orderService)
+        whenever(orderService.get(customer, asset)).thenReturn(order.toMono())
+
+        orderController.get(customer, asset).subscribe{
+            assertEquals(HttpStatus.OK, it.statusCode)
+            assertEquals(order, it.body)
+        }
+    }
 }
