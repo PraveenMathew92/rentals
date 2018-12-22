@@ -7,7 +7,11 @@ import reactor.core.publisher.toMono
 
 class OrderService(val orderRepository: OrderRepository){
     fun save(order: Order): Mono<Boolean> {
-        orderRepository.save(order)
-        return true.toMono()
+            return orderRepository.existsById(order.id).flatMap {
+            when (it) {
+                false -> orderRepository.save(order).map { it == order }
+                else -> false.toMono()
+            }
+        }
     }
 }
