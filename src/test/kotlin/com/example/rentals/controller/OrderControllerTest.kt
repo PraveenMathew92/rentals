@@ -1,6 +1,10 @@
 package com.example.rentals.controller
 
-import com.example.rentals.domain.*
+import com.example.rentals.domain.Asset
+import com.example.rentals.domain.Customer
+import com.example.rentals.domain.CategoryFields
+import com.example.rentals.domain.OrderPrimaryKey
+import com.example.rentals.domain.Order
 import com.example.rentals.service.OrderService
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -13,7 +17,7 @@ import reactor.core.publisher.toMono
 import java.util.UUID
 import java.util.Date
 
-class OrderControllerTest{
+class OrderControllerTest {
     private val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
             "Swift Dzire",
             CategoryFields("Maruti Suzuki", "Lxi", "5 Seater"))
@@ -44,9 +48,9 @@ class OrderControllerTest{
     @Test
     fun `should should return 200 if the order is fetched from the database`() {
         val orderController = OrderController(orderService)
-        whenever(orderService.get(customer, asset)).thenReturn(order.toMono())
+        whenever(orderService.get(customer.email, asset.id.toString())).thenReturn(order.toMono())
 
-        orderController.get(customer, asset).subscribe {
+        orderController.get(customer.email, asset.id.toString()).subscribe {
             assertEquals(HttpStatus.OK, it.statusCode)
             assertEquals(order, it.body)
         }
@@ -55,9 +59,9 @@ class OrderControllerTest{
     @Test
     fun `should should return 404 if the order is not found in the database`() {
         val orderController = OrderController(orderService)
-        whenever(orderService.get(customer, asset)).thenReturn(Mono.empty())
+        whenever(orderService.get(customer.email, asset.id.toString())).thenReturn(Mono.empty())
 
-        orderController.get(customer, asset).subscribe {
+        orderController.get(customer.email, asset.id.toString()).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
         }
     }
