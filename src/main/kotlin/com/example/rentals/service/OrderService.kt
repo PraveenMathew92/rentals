@@ -1,6 +1,9 @@
 package com.example.rentals.service
 
+import com.example.rentals.domain.Asset
+import com.example.rentals.domain.Customer
 import com.example.rentals.domain.Order
+import com.example.rentals.domain.OrderPrimaryKey
 import com.example.rentals.repository.OrderRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -17,7 +20,8 @@ class OrderService(val orderRepository: OrderRepository){
         }
     }
 
-    fun get(order: Order): Mono<Order> {
-        return orderRepository.findById(order.id)
+    fun get(customer: Customer, asset: Asset): Mono<Order> {
+        val orderId = OrderPrimaryKey(customer, asset)
+        return orderRepository.findById(orderId)
     }
 }

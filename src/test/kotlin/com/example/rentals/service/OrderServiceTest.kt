@@ -53,7 +53,7 @@ internal class OrderServiceTest{
         whenever(orderRepository.findById(captor.capture()))
                 .thenReturn(order.toMono())
 
-        orderService.get(order).subscribe{
+        orderService.get(customer, asset).subscribe{
             assertEquals(OrderPrimaryKey(customer, asset), captor.lastValue)
         }
     }
