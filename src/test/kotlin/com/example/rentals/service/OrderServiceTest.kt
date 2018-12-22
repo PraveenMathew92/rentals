@@ -44,4 +44,17 @@ internal class OrderServiceTest{
             assertFalse(it)
         }
     }
+
+    @Test
+    fun `should get the order form the database if present`(){
+        val orderService = OrderService(orderRepository)
+        val captor = argumentCaptor<OrderPrimaryKey>()
+
+        whenever(orderRepository.findById(captor.capture()))
+                .thenReturn(order.toMono())
+
+        orderService.get(order).subscribe{
+            assertEquals(OrderPrimaryKey(customer, asset), captor.lastValue)
+        }
+    }
 }

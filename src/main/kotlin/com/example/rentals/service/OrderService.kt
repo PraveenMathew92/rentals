@@ -16,4 +16,8 @@ class OrderService(val orderRepository: OrderRepository){
             }
         }
     }
+
+    fun get(order: Order): Mono<Order> {
+        return orderRepository.findById(order.id)
+    }
 }
