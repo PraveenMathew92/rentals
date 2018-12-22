@@ -27,7 +27,7 @@ internal class OrderServiceTest{
             .thenReturn(false.toMono())
         whenever(orderRepository.save(captor.capture())).thenReturn(order.toMono())
 
-        orderService.save(order).subscribe {
+        orderService.create(order).subscribe {
             assertTrue(it)
             assertEquals(order, captor.lastValue)
         }
@@ -40,7 +40,7 @@ internal class OrderServiceTest{
         whenever(orderRepository.existsById(OrderPrimaryKey(customer, asset)))
             .thenReturn(true.toMono())
 
-        orderService.save(order).subscribe {
+        orderService.create(order).subscribe {
             assertFalse(it)
         }
     }
