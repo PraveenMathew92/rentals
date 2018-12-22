@@ -6,4 +6,4 @@ import org.springframework.data.cassandra.repository.ReactiveCassandraRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface OrderRepository: ReactiveCassandraRepository<Order, OrderPrimaryKey>
+interface OrderRepository : ReactiveCassandraRepository<Order, OrderPrimaryKey>
