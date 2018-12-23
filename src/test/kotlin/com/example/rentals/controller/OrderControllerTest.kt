@@ -65,4 +65,24 @@ class OrderControllerTest {
             assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
         }
     }
+
+    @Test
+    fun `should should return 204 if the order is deleted form the database`() {
+        val orderController = OrderController(orderService)
+        whenever(orderService.delete(customer.email, asset.id.toString())).thenReturn(true.toMono())
+
+        orderController.delete(customer.email, asset.id.toString()).subscribe {
+            assertEquals(ResponseEntity<Order>(HttpStatus.NO_CONTENT), it)
+        }
+    }
+
+    @Test
+    fun `should should return 404 if the order is deleted form the database`() {
+        val orderController = OrderController(orderService)
+        whenever(orderService.delete(customer.email, asset.id.toString())).thenReturn(false.toMono())
+
+        orderController.delete(customer.email, asset.id.toString()).subscribe {
+            assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
+        }
+    }
 }

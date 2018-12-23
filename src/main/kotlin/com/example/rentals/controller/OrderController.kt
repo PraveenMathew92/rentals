@@ -19,4 +19,12 @@ class OrderController(val orderService: OrderService) {
                 .map { ResponseEntity(it, HttpStatus.OK) }
                 .defaultIfEmpty(ResponseEntity<Order>(HttpStatus.NOT_FOUND))
     }
+
+    fun delete(email: String, assetId: String): Mono<ResponseEntity<Order>> {
+        return orderService.delete(email, assetId).map { when (it) {
+                true -> ResponseEntity<Order>(HttpStatus.NO_CONTENT)
+                else -> ResponseEntity<Order>(HttpStatus.NOT_FOUND)
+            }
+        }
+    }
 }

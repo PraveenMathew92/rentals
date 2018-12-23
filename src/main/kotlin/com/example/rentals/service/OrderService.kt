@@ -44,14 +44,14 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
     }
 
     private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)
+
     fun delete(email: String, assetId: String): Mono<Boolean> {
         return Mono.zip(customerService.get(email), assetService.get(assetId)).flatMap {
             val orderPrimaryKey = OrderPrimaryKey(it.t1, it.t2)
-            orderRepository.existsById(orderPrimaryKey).flatMap { when(it) {
-                true -> orderRepository.deleteById(orderPrimaryKey).map{ true }
+            orderRepository.existsById(orderPrimaryKey).flatMap { when (it) {
+                true -> orderRepository.deleteById(orderPrimaryKey).map { true }
                 else -> false.toMono()
             } }
         }
     }
-
 }
