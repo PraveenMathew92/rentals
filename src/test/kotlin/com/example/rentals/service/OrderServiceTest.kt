@@ -122,4 +122,51 @@ internal class OrderServiceTest {
             assertFalse(it)
         }
     }
+
+    @Test
+    fun `should return true if the order is deleted from the database`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(customerService.get(customer.email))
+                .thenReturn(customer.toMono())
+        whenever(assetService.get(asset.id.toString()))
+                .thenReturn(asset.toMono())
+        whenever(orderRepository.existsById(OrderPrimaryKey(customer, asset))).thenReturn(true.toMono())
+        whenever(orderRepository.deleteById(OrderPrimaryKey(customer, asset))).thenReturn(Mono.create { it.success(null) })
+
+        orderService.delete(customer.email, asset.id.toString()).subscribe {
+            assertTrue(it)
+        }
+    }
+
+    @Test
+    fun `should return false if the order is not present in the database`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(customerService.get(customer.email))
+                .thenReturn(customer.toMono())
+        whenever(assetService.get(asset.id.toString()))
+                .thenReturn(asset.toMono())
+        whenever(orderRepository.existsById(OrderPrimaryKey(customer, asset))).thenReturn(false.toMono())
+
+        orderService.delete(customer.email, asset.id.toString()).subscribe {
+            assertFalse(it)
+        }
+    }
+
+    @Test
+    fun `should return false if the order is not deleted database`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(customerService.get(customer.email))
+                .thenReturn(customer.toMono())
+        whenever(assetService.get(asset.id.toString()))
+                .thenReturn(asset.toMono())
+        whenever(orderRepository.existsById(OrderPrimaryKey(customer, asset))).thenReturn(false.toMono())
+        whenever(orderRepository.deleteById(OrderPrimaryKey(customer, asset))).thenReturn(Mono.empty())
+
+        orderService.delete(customer.email, asset.id.toString()).subscribe {
+            assertFalse(it)
+        }
+    }
 }
