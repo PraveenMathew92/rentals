@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 import java.util.UUID
 import java.util.Date
@@ -72,9 +73,53 @@ internal class OrderServiceTest {
         val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
         val updatedOrder = order.copy(rate = 1000)
         val orderService = OrderService(orderRepository, customerService, assetService)
+        val captor = argumentCaptor<Order>()
 
-        orderService.patch(customer.email, asset.id, patch).subscribe {
-            assertEquals(updatedOrder, it)
+        whenever(customerService.get(customer.email))
+                .thenReturn(customer.toMono())
+        whenever(assetService.get(asset.id.toString()))
+                .thenReturn(asset.toMono())
+        whenever(orderRepository.findById(OrderPrimaryKey(customer, asset))).thenReturn(order.toMono())
+        whenever(orderRepository.save(captor.capture())).thenReturn(updatedOrder.toMono())
+
+        orderService.patch(customer.email, asset.id.toString(), patch).subscribe {
+            assertTrue(it)
+            assertEquals(updatedOrder, captor.lastValue)
+        }
+    }
+
+    @Test
+    fun `should return false if the patch is fails`() {
+        val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
+        val updatedOrder = order.copy(rate = 1000)
+        val orderService = OrderService(orderRepository, customerService, assetService)
+        val captor = argumentCaptor<Order>()
+
+        whenever(customerService.get(customer.email))
+                .thenReturn(customer.toMono())
+        whenever(assetService.get(asset.id.toString()))
+                .thenReturn(asset.toMono())
+        whenever(orderRepository.findById(OrderPrimaryKey(customer, asset))).thenReturn(order.toMono())
+        whenever(orderRepository.save(updatedOrder)).thenReturn(order.toMono())
+
+        orderService.patch(customer.email, asset.id.toString(), patch).subscribe {
+            assertFalse(it)
+        }
+    }
+
+    @Test
+    fun `should return false if the order is not found in the database`() {
+        val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(customerService.get(customer.email))
+                .thenReturn(customer.toMono())
+        whenever(assetService.get(asset.id.toString()))
+                .thenReturn(asset.toMono())
+        whenever(orderRepository.findById(OrderPrimaryKey(customer, asset))).thenReturn(Mono.empty())
+
+        orderService.patch(customer.email, asset.id.toString(), patch).subscribe {
+            assertFalse(it)
         }
     }
 }

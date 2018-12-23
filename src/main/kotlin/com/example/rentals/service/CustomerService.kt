@@ -38,17 +38,17 @@ class CustomerService(val customerRepository: CustomerRepository) {
 
     fun patch(email: String, patch: String): Mono<Boolean> {
         val mapper = ObjectMapper()
-        return get(email)
-                .flatMap { it -> mapper.readValue(
-                        JsonPatch.apply(stringToJsonNode(patch),
-                                stringToJsonNode(mapper.writeValueAsString(it)))
-                                .toString(),
-                        Customer::class.java
-                ).toMono()
-                }.flatMap { customerRepository.save(it)
-                        .flatMap { true.toMono() }
-                        .defaultIfEmpty(false)
-                }.switchIfEmpty(false.toMono())
+            return get(email)
+                    .flatMap { it -> mapper.readValue(
+                            JsonPatch.apply(stringToJsonNode(patch),
+                                    stringToJsonNode(mapper.writeValueAsString(it)))
+                                    .toString(),
+                            Customer::class.java
+                    ).toMono()
+                    }.flatMap { customerRepository.save(it)
+                            .flatMap { true.toMono() }
+                            .defaultIfEmpty(false)
+                    }.switchIfEmpty(false.toMono())
     }
 
     private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)

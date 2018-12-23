@@ -7,6 +7,6 @@ import java.io.Serializable
 
 @PrimaryKeyClass
 data class OrderPrimaryKey(
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED) val customer: Customer,
-    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED) val asset: Asset
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED) val customer: Customer = Customer(),
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED) val asset: Asset = Asset()
 ) : Serializable
