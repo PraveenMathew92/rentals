@@ -85,4 +85,26 @@ class OrderControllerTest {
             assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
         }
     }
+
+    @Test
+    fun `should should return 204 if the order is updated`() {
+        val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
+        val orderController = OrderController(orderService)
+        whenever(orderService.patch(customer.email, asset.id.toString(), patch)).thenReturn(true.toMono())
+
+        orderController.patch(customer.email, asset.id.toString(), patch).subscribe {
+            assertEquals(ResponseEntity<Order>(HttpStatus.NO_CONTENT), it)
+        }
+    }
+
+    @Test
+    fun `should should return 404 if the order fails to update`() {
+        val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
+        val orderController = OrderController(orderService)
+        whenever(orderService.patch(customer.email, asset.id.toString(), patch)).thenReturn(false.toMono())
+
+        orderController.patch(customer.email, asset.id.toString(), patch).subscribe {
+            assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
+        }
+    }
 }

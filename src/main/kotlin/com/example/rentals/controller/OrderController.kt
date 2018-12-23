@@ -27,4 +27,11 @@ class OrderController(val orderService: OrderService) {
             }
         }
     }
+
+    fun patch(email: String, assetId: String, patch: String): Mono<ResponseEntity<Order>> {
+        return orderService.patch(email, assetId, patch).map { when (it) {
+            true -> ResponseEntity<Order>(HttpStatus.NO_CONTENT)
+            else -> ResponseEntity<Order>(HttpStatus.NOT_FOUND)
+        } }
+    }
 }
