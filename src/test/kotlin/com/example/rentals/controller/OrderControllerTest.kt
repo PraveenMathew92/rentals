@@ -1,8 +1,5 @@
 package com.example.rentals.controller
 
-import com.example.rentals.domain.Asset
-import com.example.rentals.domain.Customer
-import com.example.rentals.domain.CategoryFields
 import com.example.rentals.domain.OrderPrimaryKey
 import com.example.rentals.domain.Order
 import com.example.rentals.service.OrderService
@@ -18,11 +15,10 @@ import java.util.UUID
 import java.util.Date
 
 class OrderControllerTest {
-    private val asset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
-            "Swift Dzire",
-            CategoryFields("Maruti Suzuki", "Lxi", "5 Seater"))
-    private val customer = Customer("test@email.com", "John Doe", 1234567890)
-    private val order = Order(OrderPrimaryKey(customer, asset), Date(), 1000)
+    val email = "test@email.com"
+    val assetId = UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
+    private val order = Order(OrderPrimaryKey(email,
+            assetId), Date(), 1000)
     private val orderService = mock<OrderService>()
 
     @Test
@@ -48,9 +44,9 @@ class OrderControllerTest {
     @Test
     fun `should should return 200 if the order is fetched from the database`() {
         val orderController = OrderController(orderService)
-        whenever(orderService.get(customer.email, asset.id.toString())).thenReturn(order.toMono())
+        whenever(orderService.get(email, assetId.toString())).thenReturn(order.toMono())
 
-        orderController.get(customer.email, asset.id.toString()).subscribe {
+        orderController.get(email, assetId.toString()).subscribe {
             assertEquals(HttpStatus.OK, it.statusCode)
             assertEquals(order, it.body)
         }
@@ -59,9 +55,9 @@ class OrderControllerTest {
     @Test
     fun `should should return 404 if the order is not found in the database`() {
         val orderController = OrderController(orderService)
-        whenever(orderService.get(customer.email, asset.id.toString())).thenReturn(Mono.empty())
+        whenever(orderService.get(email, assetId.toString())).thenReturn(Mono.empty())
 
-        orderController.get(customer.email, asset.id.toString()).subscribe {
+        orderController.get(email, assetId.toString()).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
         }
     }
@@ -69,9 +65,9 @@ class OrderControllerTest {
     @Test
     fun `should should return 204 if the order is deleted form the database`() {
         val orderController = OrderController(orderService)
-        whenever(orderService.delete(customer.email, asset.id.toString())).thenReturn(true.toMono())
+        whenever(orderService.delete(email, assetId.toString())).thenReturn(true.toMono())
 
-        orderController.delete(customer.email, asset.id.toString()).subscribe {
+        orderController.delete(email, assetId.toString()).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.NO_CONTENT), it)
         }
     }
@@ -79,9 +75,9 @@ class OrderControllerTest {
     @Test
     fun `should should return 404 if the order is deleted form the database`() {
         val orderController = OrderController(orderService)
-        whenever(orderService.delete(customer.email, asset.id.toString())).thenReturn(false.toMono())
+        whenever(orderService.delete(email, assetId.toString())).thenReturn(false.toMono())
 
-        orderController.delete(customer.email, asset.id.toString()).subscribe {
+        orderController.delete(email, assetId.toString()).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
         }
     }
@@ -90,9 +86,9 @@ class OrderControllerTest {
     fun `should should return 204 if the order is updated`() {
         val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
         val orderController = OrderController(orderService)
-        whenever(orderService.patch(customer.email, asset.id.toString(), patch)).thenReturn(true.toMono())
+        whenever(orderService.patch(email, assetId.toString(), patch)).thenReturn(true.toMono())
 
-        orderController.patch(customer.email, asset.id.toString(), patch).subscribe {
+        orderController.patch(email, assetId.toString(), patch).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.NO_CONTENT), it)
         }
     }
@@ -101,9 +97,9 @@ class OrderControllerTest {
     fun `should should return 404 if the order fails to update`() {
         val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
         val orderController = OrderController(orderService)
-        whenever(orderService.patch(customer.email, asset.id.toString(), patch)).thenReturn(false.toMono())
+        whenever(orderService.patch(email, assetId.toString(), patch)).thenReturn(false.toMono())
 
-        orderController.patch(customer.email, asset.id.toString(), patch).subscribe {
+        orderController.patch(email, assetId.toString(), patch).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
         }
     }

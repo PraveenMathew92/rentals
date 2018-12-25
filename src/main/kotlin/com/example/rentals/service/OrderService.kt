@@ -9,9 +9,10 @@ import com.flipkart.zjsonpatch.JsonPatch
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
+import java.util.UUID
 
 @Service
-class OrderService(val orderRepository: OrderRepository, val customerService: CustomerService, val assetService: AssetService) {
+class OrderService(val orderRepository: OrderRepository) {
     fun create(order: Order): Mono<Boolean> {
             return orderRepository.existsById(order.id).flatMap {
             when (it) {
@@ -22,10 +23,8 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
     }
 
     fun get(email: String, id: String): Mono<Order> {
-        return Mono.zip(customerService.get(email), assetService.get(id)).flatMap {
-                val orderPrimaryKey = OrderPrimaryKey(it.t1, it.t2)
-                orderRepository.findById(orderPrimaryKey)
-        }
+        val orderPrimaryKey = OrderPrimaryKey(email, UUID.fromString(id))
+        return orderRepository.findById(orderPrimaryKey)
     }
 
     fun patch(email: String, id: String, patch: String): Mono<Boolean> {
@@ -46,12 +45,11 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
     private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)
 
     fun delete(email: String, assetId: String): Mono<Boolean> {
-        return Mono.zip(customerService.get(email), assetService.get(assetId)).flatMap {
-            val orderPrimaryKey = OrderPrimaryKey(it.t1, it.t2)
-            orderRepository.existsById(orderPrimaryKey).flatMap { when (it) {
+        val orderPrimaryKey = OrderPrimaryKey(email, UUID.fromString(assetId))
+        return orderRepository.existsById(orderPrimaryKey).flatMap { when (it) {
                 true -> orderRepository.deleteById(orderPrimaryKey).map { true }
                 else -> false.toMono()
-            } }
+            }
         }
     }
 }
