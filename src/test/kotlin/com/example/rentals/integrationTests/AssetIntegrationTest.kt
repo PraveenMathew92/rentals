@@ -22,10 +22,11 @@ class AssetIntegrationTest {
             "Swift Dzire",
             CategoryFields("Maruti Suzuki", "Vxi", "5 Seater")
     )
-            val assetWithCorrectedType = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
-            "Swift",
-                    CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
-            )
+
+    val assetWithCorrectedType = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
+    "Swift",
+            CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
+    )
 
     @Autowired
     lateinit var context: ApplicationContext
