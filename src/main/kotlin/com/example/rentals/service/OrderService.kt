@@ -2,6 +2,7 @@ package com.example.rentals.service
 
 import com.example.rentals.domain.Order
 import com.example.rentals.domain.OrderPrimaryKey
+import com.example.rentals.exceptions.AssetNotFoundException
 import com.example.rentals.exceptions.CustomerNotFoundException
 import com.example.rentals.repository.OrderRepository
 import com.fasterxml.jackson.databind.JsonNode
@@ -13,16 +14,19 @@ import reactor.core.publisher.toMono
 import java.util.UUID
 
 @Service
-class OrderService(val orderRepository: OrderRepository, val customerService: CustomerService) {
+class OrderService(val orderRepository: OrderRepository, val customerService: CustomerService, val assetService: AssetService) {
     fun create(order: Order): Mono<Boolean> {
-        return customerService.exists(order.id.email).flatMap {
-            if (it.not()) throw CustomerNotFoundException() else
-                orderRepository.existsById(order.id).flatMap { doesOrderExists ->
+        return Mono.zip(customerService.exists(order.id.email), assetService.exists(order.id.assetId)).flatMap {
+            when {
+                it.t1.not() -> throw CustomerNotFoundException()
+                it.t2.not() -> throw  AssetNotFoundException()
+                else -> orderRepository.existsById(order.id).flatMap { doesOrderExists ->
                     when (doesOrderExists) {
                         false -> orderRepository.save(order).map { it == order }
                         else -> false.toMono()
                     }
                 }
+            }
         }
     }
 

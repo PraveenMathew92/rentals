@@ -9,6 +9,7 @@ import com.flipkart.zjsonpatch.JsonPatch
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
+import java.util.*
 
 @Service
 class AssetService(private val assetRepository: AssetRepository) {
@@ -52,4 +53,7 @@ class AssetService(private val assetRepository: AssetRepository) {
     }
 
     private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)
+    fun exists(assetId: UUID?): Mono<Boolean> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

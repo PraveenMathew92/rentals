@@ -2,6 +2,7 @@ package com.example.rentals.service
 
 import com.example.rentals.domain.Order
 import com.example.rentals.domain.OrderPrimaryKey
+import com.example.rentals.exceptions.AssetNotFoundException
 import com.example.rentals.exceptions.CustomerNotFoundException
 import com.example.rentals.repository.OrderRepository
 import com.nhaarman.mockitokotlin2.argumentCaptor
@@ -24,10 +25,11 @@ internal class OrderServiceTest {
 
     val orderRepository = mock<OrderRepository>()
     val customerService = mock<CustomerService>()
+    val assetService = mock<AssetService>()
 
     @Test
     fun `should create an order in the database`() {
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
         val captor = argumentCaptor<Order>()
 
         whenever(orderRepository.existsById(OrderPrimaryKey(email, assetId)))
@@ -42,7 +44,7 @@ internal class OrderServiceTest {
 
     @Test
     fun `should not create the order in the database if the order already exists`() {
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
 
         whenever(orderRepository.existsById(OrderPrimaryKey(email, assetId)))
             .thenReturn(true.toMono())
@@ -54,7 +56,7 @@ internal class OrderServiceTest {
 
     @Test
     fun `should get the order form the database if present`() {
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
         val captor = argumentCaptor<OrderPrimaryKey>()
 
         whenever(orderRepository.findById(captor.capture()))
@@ -69,7 +71,7 @@ internal class OrderServiceTest {
     fun `should return true if the patch is successful`() {
         val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
         val updatedOrder = order.copy(rate = 1000)
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
         val captor = argumentCaptor<Order>()
 
         whenever(orderRepository.findById(OrderPrimaryKey(email, assetId))).thenReturn(order.toMono())
@@ -85,7 +87,7 @@ internal class OrderServiceTest {
     fun `should return false if the patch is fails`() {
         val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
         val updatedOrder = order.copy(rate = 1000)
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
         val captor = argumentCaptor<Order>()
 
         whenever(orderRepository.findById(OrderPrimaryKey(email, assetId))).thenReturn(order.toMono())
@@ -99,7 +101,7 @@ internal class OrderServiceTest {
     @Test
     fun `should return false if the order is not found in the database`() {
         val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
 
         whenever(orderRepository.findById(OrderPrimaryKey(email, assetId))).thenReturn(Mono.empty())
 
@@ -110,7 +112,7 @@ internal class OrderServiceTest {
 
     @Test
     fun `should return true if the order is deleted from the database`() {
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
 
         whenever(orderRepository.existsById(OrderPrimaryKey(email, assetId))).thenReturn(true.toMono())
         whenever(orderRepository.deleteById(OrderPrimaryKey(email, assetId))).thenReturn(Mono.create { it.success(null) })
@@ -122,7 +124,7 @@ internal class OrderServiceTest {
 
     @Test
     fun `should return false if the order is not present in the database`() {
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
 
         whenever(orderRepository.existsById(OrderPrimaryKey(email, assetId))).thenReturn(false.toMono())
 
@@ -133,7 +135,7 @@ internal class OrderServiceTest {
 
     @Test
     fun `should return false if the order is not deleted database`() {
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
 
         whenever(orderRepository.existsById(OrderPrimaryKey(email, assetId))).thenReturn(false.toMono())
         whenever(orderRepository.deleteById(OrderPrimaryKey(email, assetId))).thenReturn(Mono.empty())
@@ -145,10 +147,20 @@ internal class OrderServiceTest {
 
     @Test
     fun `should  throw CustomerNotFoundException for a non existent customer`() {
-        val orderService = OrderService(orderRepository, customerService)
+        val orderService = OrderService(orderRepository, customerService, assetService)
 
         whenever(customerService.exists(email)).thenReturn(false.toMono())
 
         assertThrows<CustomerNotFoundException> { orderService.create(order).block() }
+    }
+
+    @Test
+    fun `should  throw AssetNotFoundException for a non existent asseet`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(customerService.exists(email)).thenReturn(true.toMono())
+        whenever(assetService.exists(assetId)).thenReturn(false.toMono())
+
+        assertThrows<AssetNotFoundException> { orderService.create(order).block() }
     }
 }
