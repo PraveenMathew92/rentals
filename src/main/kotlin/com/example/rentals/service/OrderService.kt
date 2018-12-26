@@ -19,7 +19,7 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
         return Mono.zip(customerService.exists(order.id.email), assetService.exists(order.id.assetId)).flatMap {
             when {
                 it.t1.not() -> throw CustomerNotFoundException()
-                it.t2.not() -> throw  AssetNotFoundException()
+                it.t2.not() -> throw AssetNotFoundException()
                 else -> orderRepository.existsById(order.id).flatMap { doesOrderExists ->
                     when (doesOrderExists) {
                         false -> orderRepository.save(order).map { it == order }

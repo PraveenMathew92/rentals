@@ -5,7 +5,6 @@ import com.example.rentals.repository.CustomerRepository
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.flipkart.zjsonpatch.JsonPatch
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono

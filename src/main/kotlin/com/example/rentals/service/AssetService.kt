@@ -9,7 +9,7 @@ import com.flipkart.zjsonpatch.JsonPatch
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
-import java.util.*
+import java.util.UUID
 
 @Service
 class AssetService(private val assetRepository: AssetRepository) {
