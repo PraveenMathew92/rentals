@@ -147,4 +147,20 @@ class AssetServiceTest {
         assertFalse(assetService.create(asset).block()!!)
         verify(assetRepository, never()).save(asset)
     }
+
+    @Test
+    fun `should return true if the asset is present in the database`() {
+        whenever(assetRepository.existsById(asset.id)).thenReturn(true.toMono())
+        val assetService = AssetService(assetRepository)
+
+        assetService.exists(asset.id).subscribe { assertTrue(it) }
+    }
+
+    @Test
+    fun `should return false if the asset is not present in the database`() {
+        whenever(assetRepository.existsById(asset.id)).thenReturn(false.toMono())
+        val assetService = AssetService(assetRepository)
+
+        assetService.exists(asset.id).subscribe { assertFalse(it) }
+    }
 }

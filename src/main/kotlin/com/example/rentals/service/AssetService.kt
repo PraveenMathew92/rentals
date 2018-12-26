@@ -52,8 +52,9 @@ class AssetService(private val assetRepository: AssetRepository) {
                 .defaultIfEmpty(false)
     }
 
-    private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)
-    fun exists(assetId: UUID?): Mono<Boolean> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun exists(assetId: UUID): Mono<Boolean> {
+        return assetRepository.existsById(assetId)
     }
+
+    private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)
 }
