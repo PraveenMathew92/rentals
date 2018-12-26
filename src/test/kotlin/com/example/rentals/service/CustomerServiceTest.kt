@@ -6,8 +6,7 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
@@ -128,6 +127,28 @@ class CustomerServiceTest {
 
         customerService.patch(customer.email, patch).subscribe {
             Assert.assertFalse(it)
+        }
+    }
+
+    @Test
+    fun `should return true if the customer exists in the database`() {
+        val customerService = CustomerService(customerRepository)
+
+        whenever(customerRepository.existsById(customer.email)).thenReturn(true.toMono())
+
+        customerService.exists(customer.email).subscribe {
+            assertTrue(it)
+        }
+    }
+
+    @Test
+    fun `should return false if the customer does not exist in the database`() {
+        val customerService = CustomerService(customerRepository)
+
+        whenever(customerRepository.existsById(customer.email)).thenReturn(false.toMono())
+
+        customerService.exists(customer.email).subscribe {
+            assertFalse(it)
         }
     }
 }

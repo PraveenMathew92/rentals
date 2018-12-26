@@ -55,6 +55,6 @@ class CustomerService(val customerRepository: CustomerRepository) {
     private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)
 
     fun exists(email: String): Mono<Boolean> {
-        return false.toMono()
+        return customerRepository.existsById(email)
     }
 }
