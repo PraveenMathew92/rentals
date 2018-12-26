@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono
 @RequestMapping("/order")
 class OrderController(val orderService: OrderService) {
     @PostMapping
-    fun create(order: Order): Mono<ResponseEntity<Order>> {
+    fun create(@RequestBody order: Order): Mono<ResponseEntity<Order>> {
         return orderService.create(order).map { when (it) {
             true -> ResponseEntity<Order>(HttpStatus.CREATED)
             else -> ResponseEntity<Order>(HttpStatus.CONFLICT)
@@ -26,14 +26,14 @@ class OrderController(val orderService: OrderService) {
     }
 
     @GetMapping("/customer/{email}/asset/{assetId}")
-    fun get(@PathVariable email: String, @PathVariable assetId: String): Mono<ResponseEntity<Order>> {
+    fun get(@PathVariable("email") email: String, @PathVariable("assetId") assetId: String): Mono<ResponseEntity<Order>> {
         return orderService.get(email, assetId)
                 .map { ResponseEntity(it, HttpStatus.OK) }
                 .defaultIfEmpty(ResponseEntity<Order>(HttpStatus.NOT_FOUND))
     }
 
     @DeleteMapping("/customer/{email}/asset/{assetId}")
-    fun delete(@PathVariable email: String, @PathVariable assetId: String): Mono<ResponseEntity<Order>> {
+    fun delete(@PathVariable("email") email: String, @PathVariable("assetId") assetId: String): Mono<ResponseEntity<Order>> {
         return orderService.delete(email, assetId).map { when (it) {
                 true -> ResponseEntity<Order>(HttpStatus.NO_CONTENT)
                 else -> ResponseEntity<Order>(HttpStatus.NOT_FOUND)
@@ -42,7 +42,7 @@ class OrderController(val orderService: OrderService) {
     }
 
     @PatchMapping("/customer/{email}/asset/{assetId}")
-    fun patch(@PathVariable email: String, @PathVariable assetId: String, @RequestBody patch: String): Mono<ResponseEntity<Order>> {
+    fun patch(@PathVariable("email") email: String, @PathVariable("assetId") assetId: String, @RequestBody patch: String): Mono<ResponseEntity<Order>> {
         return orderService.patch(email, assetId, patch).map { when (it) {
             true -> ResponseEntity<Order>(HttpStatus.NO_CONTENT)
             else -> ResponseEntity<Order>(HttpStatus.NOT_FOUND)

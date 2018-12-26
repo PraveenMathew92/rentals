@@ -2,8 +2,6 @@ package com.example.rentals
 
 import com.example.rentals.converter.CategoryToJSONConverter
 import com.example.rentals.converter.JSONToCategoryConverter
-import com.example.rentals.converter.JSONToOrderPrimaryKeyConverter
-import com.example.rentals.converter.OrderPrimaryKeyToJSONConverter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.cassandra.config.AbstractReactiveCassandraConfiguration
@@ -30,9 +28,7 @@ class ReactiveCassandraConfiguration : AbstractReactiveCassandraConfiguration() 
         return CustomConversions(
                 CustomConversions.StoreConversions.NONE,
                 listOf(JSONToCategoryConverter(),
-                        CategoryToJSONConverter(),
-                        JSONToOrderPrimaryKeyConverter(),
-                        OrderPrimaryKeyToJSONConverter())
+                        CategoryToJSONConverter())
         )
     }
 

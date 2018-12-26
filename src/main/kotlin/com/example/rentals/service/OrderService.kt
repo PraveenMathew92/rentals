@@ -47,7 +47,7 @@ class OrderService(val orderRepository: OrderRepository) {
     fun delete(email: String, assetId: String): Mono<Boolean> {
         val orderPrimaryKey = OrderPrimaryKey(email, UUID.fromString(assetId))
         return orderRepository.existsById(orderPrimaryKey).flatMap { when (it) {
-                true -> orderRepository.deleteById(orderPrimaryKey).map { true }
+                true -> orderRepository.deleteById(orderPrimaryKey).then(true.toMono())
                 else -> false.toMono()
             }
         }

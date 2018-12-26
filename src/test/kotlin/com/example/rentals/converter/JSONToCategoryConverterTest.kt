@@ -18,6 +18,6 @@ internal class JSONToCategoryConverterTest {
     @Test
     fun `should throw IllegalStateException in case of Exception`() {
         val json = " {\"maker\":\"The Producer type\":\"The Genera\",\"size\":\"Duration\"}"
-        val exception = assertThrows<IllegalStateException> { JSONToCategoryConverter().convert(json) }
+        assertThrows<IllegalStateException> { JSONToCategoryConverter().convert(json) }
     }
 }

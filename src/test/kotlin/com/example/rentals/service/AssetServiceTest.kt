@@ -113,11 +113,7 @@ class AssetServiceTest {
     @Test
     fun `should return false if the asset patch fails to fetch the asset`() {
         val patch = "[{\"op\": \"replace\", \"path\":\"category/type\", \"value\": \"Lxi\"}]"
-        val newAsset = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
-                "Swift Dzire",
-                CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
-        )
-                val assetService = AssetService(assetRepository)
+        val assetService = AssetService(assetRepository)
 
         whenever(assetRepository.findById(asset.id)).thenReturn(Mono.empty())
 

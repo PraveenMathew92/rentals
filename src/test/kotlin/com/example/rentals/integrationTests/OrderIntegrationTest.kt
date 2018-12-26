@@ -60,11 +60,11 @@ class OrderIntegrationTest {
 
         client.patch()
                 .uri("/order/customer/email@test.com/asset/65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
-                .body("[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]".toMono(),
+                .body("[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1500\"}]".toMono(),
                         String::class.java)
                 .exchange()
                 .expectStatus().isNoContent
-                .expectBody(Customer::class.java)
+                .expectBody(Order::class.java)
 
         client.delete()
                 .uri("/order/customer/email@test.com/asset/65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
