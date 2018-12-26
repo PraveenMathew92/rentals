@@ -35,6 +35,8 @@ internal class OrderServiceTest {
         whenever(orderRepository.existsById(OrderPrimaryKey(email, assetId)))
             .thenReturn(false.toMono())
         whenever(orderRepository.save(captor.capture())).thenReturn(order.toMono())
+        whenever(customerService.exists(email)).thenReturn(true.toMono())
+        whenever(assetService.exists(assetId)).thenReturn(true.toMono())
 
         orderService.create(order).subscribe {
             assertTrue(it)
@@ -48,6 +50,8 @@ internal class OrderServiceTest {
 
         whenever(orderRepository.existsById(OrderPrimaryKey(email, assetId)))
             .thenReturn(true.toMono())
+        whenever(customerService.exists(email)).thenReturn(true.toMono())
+        whenever(assetService.exists(assetId)).thenReturn(true.toMono())
 
         orderService.create(order).subscribe {
             assertFalse(it)
@@ -150,6 +154,7 @@ internal class OrderServiceTest {
         val orderService = OrderService(orderRepository, customerService, assetService)
 
         whenever(customerService.exists(email)).thenReturn(false.toMono())
+        whenever(assetService.exists(assetId)).thenReturn(true.toMono())
 
         assertThrows<CustomerNotFoundException> { orderService.create(order).block() }
     }
