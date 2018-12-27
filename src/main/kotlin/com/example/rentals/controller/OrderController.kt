@@ -1,5 +1,6 @@
 package com.example.rentals.controller
 
+import com.example.rentals.domain.Asset
 import com.example.rentals.domain.Customer
 import com.example.rentals.domain.Order
 import com.example.rentals.service.OrderService
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.DeleteMapping
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
+import java.util.UUID
 
 @RestController
 @RequestMapping
@@ -58,5 +60,15 @@ class OrderController(val orderService: OrderService) {
                     true -> ResponseEntity<Customer>(HttpStatus.NO_CONTENT).toMono()
                     else -> ResponseEntity<Customer>(HttpStatus.NOT_FOUND).toMono()
                 } }
+    }
+
+    @DeleteMapping("asset/{id}")
+    fun safeDeleteAsset(@PathVariable id: UUID): Mono<ResponseEntity<Asset>> {
+        return orderService.safeDeleteAsset(id).map {
+            when (it) {
+                true -> ResponseEntity<Asset>(HttpStatus.NO_CONTENT)
+                else -> ResponseEntity<Asset>(HttpStatus.NOT_FOUND)
+            }
+        }
     }
 }

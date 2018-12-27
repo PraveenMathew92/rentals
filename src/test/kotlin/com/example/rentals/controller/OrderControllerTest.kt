@@ -1,11 +1,13 @@
 package com.example.rentals.controller
 
+import com.example.rentals.domain.Asset
 import com.example.rentals.domain.Customer
 import com.example.rentals.domain.OrderPrimaryKey
 import com.example.rentals.domain.Order
 import com.example.rentals.service.OrderService
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import org.junit.Assert
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -124,6 +126,28 @@ class OrderControllerTest {
 
         orderController.safeDeleteCustomer(email).subscribe {
             assertEquals(ResponseEntity<Customer>(HttpStatus.NOT_FOUND), it)
+        }
+    }
+
+    @Test
+    fun `should return the status 204 when the delete is successful`() {
+        val orderController = OrderController(orderService)
+
+        whenever(orderService.safeDeleteAsset(assetId)).thenReturn(true.toMono())
+
+        orderController.safeDeleteAsset(assetId).subscribe {
+            assertEquals(ResponseEntity<Asset>(HttpStatus.NO_CONTENT), it)
+        }
+    }
+
+    @Test
+    fun `should return the status 404 when the delete is unsuccessful`() {
+        val orderController = OrderController(orderService)
+
+        whenever(orderService.safeDeleteAsset(assetId)).thenReturn(false.toMono())
+
+        orderController.safeDeleteAsset(assetId).subscribe {
+            assertEquals(ResponseEntity<Asset>(HttpStatus.NOT_FOUND), it)
         }
     }
 }
