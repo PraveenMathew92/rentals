@@ -6,7 +6,6 @@ import com.example.rentals.domain.Order
 import com.example.rentals.service.OrderService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,7 +18,6 @@ import reactor.core.publisher.toMono
 import java.util.UUID
 
 @RestController
-@RequestMapping
 class OrderController(val orderService: OrderService) {
     @PostMapping
     fun create(@RequestBody order: Order): Mono<ResponseEntity<Order>> {

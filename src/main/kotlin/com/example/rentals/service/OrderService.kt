@@ -77,7 +77,7 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
                 .next()
                 .map { false }
                 .switchIfEmpty(true.toMono())
-        return canDeleteCustomer.flatMap { when(it) {
+        return canDeleteCustomer.flatMap { when (it) {
             true -> customerService.delete(email)
             else -> throw CustomerCannotBeDeletedException()
         } }
@@ -88,7 +88,7 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
                 .next()
                 .map { false }
                 .switchIfEmpty(true.toMono())
-        return canDeleteAsset.flatMap { when(it) {
+        return canDeleteAsset.flatMap { when (it) {
             true -> assetService.delete(assetId.toString())
             else -> throw AssetCannotBeDeletedException()
         } }

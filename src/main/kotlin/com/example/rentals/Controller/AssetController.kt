@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.DeleteMapping
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
@@ -37,16 +36,6 @@ class AssetController(private val assetService: AssetService) {
     @PatchMapping("/{id}")
     fun patch(@PathVariable id: String, @RequestBody patch: String): Mono<ResponseEntity<Asset>> {
         return assetService.patch(id, patch).map {
-            when (it) {
-                true -> ResponseEntity<Asset>(HttpStatus.NO_CONTENT)
-                else -> ResponseEntity<Asset>(HttpStatus.NOT_FOUND)
-            }
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: String): Mono<ResponseEntity<Asset>> {
-        return assetService.delete(id).map {
             when (it) {
                 true -> ResponseEntity<Asset>(HttpStatus.NO_CONTENT)
                 else -> ResponseEntity<Asset>(HttpStatus.NOT_FOUND)

@@ -98,28 +98,4 @@ internal class AssetControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, response?.statusCode)
     }
-
-    @Test
-    fun `should return the status 204 when the delete is successful`() {
-        val assetController = AssetController(assetService)
-        val id = asset.id.toString()
-
-        whenever(assetService.delete(id)).thenReturn(true.toMono())
-
-        val response = assetController.delete(id).block()
-
-        assertEquals(HttpStatus.NO_CONTENT, response?.statusCode)
-    }
-
-    @Test
-    fun `should return the status 404 when the delete is unsuccessful`() {
-        val assetController = AssetController(assetService)
-        val id = asset.id.toString()
-
-        whenever(assetService.delete(id)).thenReturn(false.toMono())
-
-        val response = assetController.delete(id).block()
-
-        assertEquals(HttpStatus.NOT_FOUND, response?.statusCode)
-    }
 }

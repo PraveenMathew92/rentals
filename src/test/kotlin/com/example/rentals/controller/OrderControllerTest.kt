@@ -7,7 +7,6 @@ import com.example.rentals.domain.Order
 import com.example.rentals.service.OrderService
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.Assert
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -112,7 +111,7 @@ class OrderControllerTest {
         val orderController = OrderController(orderService)
 
         whenever(orderService.safeDeleteCustomer(email)).thenReturn(true.toMono())
-        
+
         orderController.safeDeleteCustomer(email).subscribe {
             assertEquals(ResponseEntity<Customer>(HttpStatus.NO_CONTENT), it)
         }
