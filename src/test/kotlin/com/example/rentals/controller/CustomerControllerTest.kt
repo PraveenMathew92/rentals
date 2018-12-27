@@ -49,22 +49,6 @@ class CustomerControllerTest {
     }
 
     @Test
-    fun `should return 204 if the customer is deleted from the database`() {
-        whenever(customerService.delete(customer.email)).thenReturn(true.toMono())
-        customerController.delete(customer.email).subscribe {
-            assertEquals(ResponseEntity<Customer>(HttpStatus.NO_CONTENT), it)
-        }
-    }
-
-    @Test
-    fun `should return 404 if the customer to be deleted is not found in the database`() {
-        whenever(customerService.delete(customer.email)).thenReturn(false.toMono())
-        customerController.delete(customer.email).subscribe {
-            assertEquals(ResponseEntity<Customer>(HttpStatus.NOT_FOUND), it)
-        }
-    }
-
-    @Test
     fun `should return 204 if the customer is patched successfully`() {
         val patch = "[{\"op\": \"replace\", \"path\":\"contact\", \"value\": \"1234098765\"}]"
 

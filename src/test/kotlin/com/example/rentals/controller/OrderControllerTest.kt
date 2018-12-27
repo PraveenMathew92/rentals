@@ -1,5 +1,6 @@
 package com.example.rentals.controller
 
+import com.example.rentals.domain.Customer
 import com.example.rentals.domain.OrderPrimaryKey
 import com.example.rentals.domain.Order
 import com.example.rentals.service.OrderService
@@ -101,6 +102,28 @@ class OrderControllerTest {
 
         orderController.patch(email, assetId.toString(), patch).subscribe {
             assertEquals(ResponseEntity<Order>(HttpStatus.NOT_FOUND), it)
+        }
+    }
+
+    @Test
+    fun `should return 204 if the customer is deleted from the database`() {
+        val orderController = OrderController(orderService)
+
+        whenever(orderService.safeDeleteCustomer(email)).thenReturn(true.toMono())
+        
+        orderController.safeDeleteCustomer(email).subscribe {
+            assertEquals(ResponseEntity<Customer>(HttpStatus.NO_CONTENT), it)
+        }
+    }
+
+    @Test
+    fun `should return 404 if the customer to be deleted is not found in the database`() {
+        val orderController = OrderController(orderService)
+
+        whenever(orderService.safeDeleteCustomer(email)).thenReturn(false.toMono())
+
+        orderController.safeDeleteCustomer(email).subscribe {
+            assertEquals(ResponseEntity<Customer>(HttpStatus.NOT_FOUND), it)
         }
     }
 }

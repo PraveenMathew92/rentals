@@ -35,15 +35,6 @@ class CustomerController(val customerService: CustomerService) {
                 .switchIfEmpty(ResponseEntity<Customer>(HttpStatus.NOT_FOUND).toMono())
     }
 
-    @DeleteMapping("/{email}")
-    fun delete(@PathVariable email: String): Mono<ResponseEntity<Customer>> {
-        return customerService.delete(email)
-                .flatMap { when (it) {
-                    true -> ResponseEntity<Customer>(HttpStatus.NO_CONTENT).toMono()
-                    else -> ResponseEntity<Customer>(HttpStatus.NOT_FOUND).toMono()
-                } }
-    }
-
     @PatchMapping("/{email}")
     fun patch(@PathVariable email: String, @RequestBody patch: String): Mono<ResponseEntity<Customer>> {
         return customerService.patch(email, patch).flatMap { when (it) {
