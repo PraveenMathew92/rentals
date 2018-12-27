@@ -6,6 +6,7 @@ import com.example.rentals.exceptions.AssetCannotBeRentedException
 import com.example.rentals.exceptions.AssetNotFoundException
 import com.example.rentals.exceptions.CustomerCannotBeDeletedException
 import com.example.rentals.exceptions.CustomerNotFoundException
+import com.example.rentals.exceptions.AssetCannotBeDeletedException
 import com.example.rentals.repository.OrderRepository
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -79,6 +80,17 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
         return canDeleteCustomer.flatMap { when(it) {
             true -> customerService.delete(email)
             else -> throw CustomerCannotBeDeletedException()
+        } }
+    }
+
+    fun safeDeleteAsset(assetId: UUID): Mono<Boolean> {
+        val canDeleteAsset = orderRepository.findByKeyAssetId(assetId)
+                .next()
+                .map { false }
+                .switchIfEmpty(true.toMono())
+        return canDeleteAsset.flatMap { when(it) {
+            true -> assetService.delete(assetId.toString())
+            else -> throw AssetCannotBeDeletedException()
         } }
     }
 }

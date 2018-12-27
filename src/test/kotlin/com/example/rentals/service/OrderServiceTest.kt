@@ -2,10 +2,7 @@ package com.example.rentals.service
 
 import com.example.rentals.domain.Order
 import com.example.rentals.domain.OrderPrimaryKey
-import com.example.rentals.exceptions.AssetCannotBeRentedException
-import com.example.rentals.exceptions.AssetNotFoundException
-import com.example.rentals.exceptions.CustomerCannotBeDeletedException
-import com.example.rentals.exceptions.CustomerNotFoundException
+import com.example.rentals.exceptions.*
 import com.example.rentals.repository.OrderRepository
 import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -205,6 +202,27 @@ internal class OrderServiceTest {
 
         orderService.safeDeleteCustomer(email).subscribe {
             verify(customerService, times(1)).delete(email)
+        }
+    }
+
+    @Test
+    fun `should throw AssetCannotBeDeletedException on deleting the asset if the asset is rented out`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.just(order))
+
+        assertThrows<AssetCannotBeDeletedException> { orderService.safeDeleteAsset(assetId).block() }
+    }
+
+    @Test
+    fun `should call the delete of asset service if the customer is safe to be deleted`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
+        whenever(assetService.delete(assetId.toString())).thenReturn(true.toMono())
+
+        orderService.safeDeleteAsset(assetId).subscribe {
+            verify(assetService, times(1)).delete(assetId.toString())
         }
     }
 }
