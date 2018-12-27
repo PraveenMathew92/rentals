@@ -2,6 +2,7 @@ package com.example.rentals.service
 
 import com.example.rentals.domain.Order
 import com.example.rentals.domain.OrderPrimaryKey
+import com.example.rentals.exceptions.AssetCannotBeRentedException
 import com.example.rentals.exceptions.AssetNotFoundException
 import com.example.rentals.exceptions.CustomerNotFoundException
 import com.example.rentals.repository.OrderRepository
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.Test
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 import java.util.UUID
@@ -37,6 +39,7 @@ internal class OrderServiceTest {
         whenever(orderRepository.save(captor.capture())).thenReturn(order.toMono())
         whenever(customerService.exists(email)).thenReturn(true.toMono())
         whenever(assetService.exists(assetId)).thenReturn(true.toMono())
+        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
 
         orderService.create(order).subscribe {
             assertTrue(it)
@@ -52,6 +55,7 @@ internal class OrderServiceTest {
             .thenReturn(true.toMono())
         whenever(customerService.exists(email)).thenReturn(true.toMono())
         whenever(assetService.exists(assetId)).thenReturn(true.toMono())
+        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
 
         orderService.create(order).subscribe {
             assertFalse(it)
@@ -155,17 +159,32 @@ internal class OrderServiceTest {
 
         whenever(customerService.exists(email)).thenReturn(false.toMono())
         whenever(assetService.exists(assetId)).thenReturn(true.toMono())
+        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
 
         assertThrows<CustomerNotFoundException> { orderService.create(order).block() }
     }
 
     @Test
-    fun `should  throw AssetNotFoundException for a non existent asseet`() {
+    fun `should  throw AssetNotFoundException for a non existent asset`() {
         val orderService = OrderService(orderRepository, customerService, assetService)
 
         whenever(customerService.exists(email)).thenReturn(true.toMono())
         whenever(assetService.exists(assetId)).thenReturn(false.toMono())
+        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
 
         assertThrows<AssetNotFoundException> { orderService.create(order).block() }
+    }
+
+    @Test
+    fun `should throw AssetCannotBeRentedException if the asset is already rented by another customer`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+        val anotherOrderId = order.id.copy(email = "another-test@email.com")
+        val anotherOrder = order.copy(id = anotherOrderId)
+
+        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.just(anotherOrder))
+        whenever(customerService.exists(email)).thenReturn(true.toMono())
+        whenever(assetService.exists(assetId)).thenReturn(true.toMono())
+
+        assertThrows<AssetCannotBeRentedException> { orderService.create(order).block() }
     }
 }

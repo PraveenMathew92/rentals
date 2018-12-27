@@ -2,6 +2,7 @@ package com.example.rentals.service
 
 import com.example.rentals.domain.Order
 import com.example.rentals.domain.OrderPrimaryKey
+import com.example.rentals.exceptions.AssetCannotBeRentedException
 import com.example.rentals.exceptions.AssetNotFoundException
 import com.example.rentals.exceptions.CustomerNotFoundException
 import com.example.rentals.repository.OrderRepository
@@ -16,10 +17,18 @@ import java.util.UUID
 @Service
 class OrderService(val orderRepository: OrderRepository, val customerService: CustomerService, val assetService: AssetService) {
     fun create(order: Order): Mono<Boolean> {
-        return Mono.zip(customerService.exists(order.id.email), assetService.exists(order.id.assetId)).flatMap {
+        val doesCustomerExists = customerService.exists(order.id.email)
+        val doesAssetExists = assetService.exists(order.id.assetId)
+        val canAssetBeRented = orderRepository.findByKeyAssetId(order.id.assetId)
+                .next()
+                .map { false }
+                .switchIfEmpty(true.toMono())
+
+        return Mono.zip(doesCustomerExists, doesAssetExists, canAssetBeRented).flatMap {
             when {
                 it.t1.not() -> throw CustomerNotFoundException()
                 it.t2.not() -> throw AssetNotFoundException()
+                it.t3.not() -> throw AssetCannotBeRentedException()
                 else -> orderRepository.existsById(order.id).flatMap { doesOrderExists ->
                     when (doesOrderExists) {
                         false -> orderRepository.save(order).map { it == order }
