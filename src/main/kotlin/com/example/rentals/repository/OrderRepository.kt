@@ -8,9 +8,8 @@ import org.springframework.data.cassandra.repository.Query
 import reactor.core.publisher.Flux
 import java.util.UUID
 
-
 @Repository
-interface OrderRepository : ReactiveCassandraRepository<Order, OrderPrimaryKey>{
+interface OrderRepository : ReactiveCassandraRepository<Order, OrderPrimaryKey> {
     @Query("SELECT * FROM asset_orders WHERE email = ?0;")
     fun findByKeyEmail(email: String): Flux<Order>
 

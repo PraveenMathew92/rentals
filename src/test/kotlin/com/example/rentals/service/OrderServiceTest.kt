@@ -4,11 +4,10 @@ import com.example.rentals.domain.Order
 import com.example.rentals.domain.OrderPrimaryKey
 import com.example.rentals.exceptions.AssetCannotBeRentedException
 import com.example.rentals.exceptions.AssetNotFoundException
+import com.example.rentals.exceptions.CustomerCannotBeDeletedException
 import com.example.rentals.exceptions.CustomerNotFoundException
 import com.example.rentals.repository.OrderRepository
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -186,5 +185,26 @@ internal class OrderServiceTest {
         whenever(assetService.exists(assetId)).thenReturn(true.toMono())
 
         assertThrows<AssetCannotBeRentedException> { orderService.create(order).block() }
+    }
+
+    @Test
+    fun `should throw CustomerCannotBeDeletedException on deleting the customer if the customer has rented out an asset`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(orderRepository.findByKeyEmail(email)).thenReturn(Flux.just(order))
+
+        assertThrows<CustomerCannotBeDeletedException> { orderService.safeDeleteCustomer(email).block() }
+    }
+
+    @Test
+    fun `should call the delete of customer service if the customer is safe to be deleted`() {
+        val orderService = OrderService(orderRepository, customerService, assetService)
+
+        whenever(orderRepository.findByKeyEmail(email)).thenReturn(Flux.empty())
+        whenever(customerService.delete(email)).thenReturn(true.toMono())
+
+        orderService.safeDeleteCustomer(email).subscribe {
+            verify(customerService, times(1)).delete(email)
+        }
     }
 }

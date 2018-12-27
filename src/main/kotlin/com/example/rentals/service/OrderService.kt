@@ -4,6 +4,7 @@ import com.example.rentals.domain.Order
 import com.example.rentals.domain.OrderPrimaryKey
 import com.example.rentals.exceptions.AssetCannotBeRentedException
 import com.example.rentals.exceptions.AssetNotFoundException
+import com.example.rentals.exceptions.CustomerCannotBeDeletedException
 import com.example.rentals.exceptions.CustomerNotFoundException
 import com.example.rentals.repository.OrderRepository
 import com.fasterxml.jackson.databind.JsonNode
@@ -68,5 +69,16 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
                 else -> false.toMono()
             }
         }
+    }
+
+    fun safeDeleteCustomer(email: String): Mono<Boolean> {
+        val canDeleteCustomer = orderRepository.findByKeyEmail(email)
+                .next()
+                .map { false }
+                .switchIfEmpty(true.toMono())
+        return canDeleteCustomer.flatMap { when(it) {
+            true -> customerService.delete(email)
+            else -> throw CustomerCannotBeDeletedException()
+        } }
     }
 }
