@@ -39,9 +39,9 @@ cassandra -f
 with the body
 ```
 {
-	"id": "38cf3c7c-f449-4cd4-85e1-bc61dd2db325",
-	"name": "Art of Computer Programming",
-	"category": "Book"
+	"id": "38cf3d7c-f449-4cd4-85e1-ba61dd2db455",
+	"name": "Art Of Computer Programming",
+	"category": {"type" : "Books", "maker": "Donald Knuth", "size" : "1050 pages"}
 }
 ```
 
