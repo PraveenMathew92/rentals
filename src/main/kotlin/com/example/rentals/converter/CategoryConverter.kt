@@ -1,6 +1,6 @@
 package com.example.rentals.converter
 
-import com.example.rentals.domain.CategoryFields
+import com.example.rentals.domain.asset.CategoryFields
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.core.convert.converter.Converter
 import java.io.IOException

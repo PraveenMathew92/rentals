@@ -1,6 +1,6 @@
 package com.example.rentals.converter
 
-import com.example.rentals.domain.CategoryFields
+import com.example.rentals.domain.asset.CategoryFields
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

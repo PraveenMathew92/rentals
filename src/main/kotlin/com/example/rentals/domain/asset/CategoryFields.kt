@@ -1,4 +1,4 @@
-package com.example.rentals.domain
+package com.example.rentals.domain.asset
 
 import org.springframework.data.cassandra.core.mapping.UserDefinedType
 

@@ -1,6 +1,6 @@
 package com.example.rentals.converter
 
-import com.example.rentals.domain.OrderPrimaryKey
+import com.example.rentals.domain.order.OrderPrimaryKey
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.UUID

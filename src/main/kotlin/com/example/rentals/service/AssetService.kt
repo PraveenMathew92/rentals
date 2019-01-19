@@ -1,6 +1,8 @@
 package com.example.rentals.service
 
-import com.example.rentals.domain.Asset
+import com.example.rentals.domain.asset.Asset
+import com.example.rentals.domain.asset.AssetPrimaryKey
+import com.example.rentals.domain.asset.AssetTable
 import com.example.rentals.repository.AssetRepository
 import com.example.rentals.util.UUIDorNil
 import com.fasterxml.jackson.databind.JsonNode
@@ -13,11 +15,12 @@ import java.util.UUID
 
 @Service
 class AssetService(private val assetRepository: AssetRepository) {
-    fun create(asset: Asset): Mono<Boolean> {
+    fun create(asset: Asset, tenantId: Int): Mono<Boolean> {
+        val primaryKey = AssetPrimaryKey(tenantId, asset.id)
         return with(assetRepository) {
-            existsById(asset.id).map { it ->
+            existsById(primaryKey).map { it ->
                 when (it) {
-                    false -> save(asset).map { it == asset }
+                    false -> save(AssetTable(primaryKey, asset)).map { it.asset == asset }
                     else -> false.toMono()
                 }
             }
@@ -25,35 +28,38 @@ class AssetService(private val assetRepository: AssetRepository) {
         }
     }
 
-    fun get(id: String): Mono<Asset> {
-        return assetRepository.findById(UUIDorNil(id))
+    fun get(id: String, tenantId: Int): Mono<Asset> {
+        return assetRepository.findById(AssetPrimaryKey(tenantId, UUIDorNil(id))).map { it.asset }
     }
 
-    fun patch(id: String, patch: String): Mono<Boolean> {
+    fun patch(id: String, patch: String, tenantId: Int): Mono<Boolean> {
+        val primaryKey = AssetPrimaryKey(tenantId, UUIDorNil(id))
         val mapper = ObjectMapper()
-        return get(id).flatMap { it ->
+        return get(id, tenantId).flatMap { it ->
             mapper.readValue(
             JsonPatch.apply(stringToJsonNode(patch),
                     stringToJsonNode(mapper.writeValueAsString(it)))
                     .toString(),
                     Asset::class.java
                     ).toMono()
-        }.flatMap { assetRepository.save(it).flatMap { true.toMono() }.defaultIfEmpty(false)
+        }.flatMap { assetRepository.save(AssetTable(primaryKey, it))
+                .flatMap { true.toMono() }
+                .defaultIfEmpty(false)
         }.switchIfEmpty(false.toMono())
     }
 
-    fun delete(id: String): Mono<Boolean> {
-        return with(assetRepository) {
-            findById(UUIDorNil(id))
-                    .flatMap { deleteById(UUIDorNil(id))
-                            .then(true.toMono())
-                    }
-        }
+    fun delete(id: String, tenantId: Int): Mono<Boolean> {
+        val primaryKey = AssetPrimaryKey(tenantId, UUIDorNil(id))
+        return (assetRepository.findById(primaryKey)
+                .flatMap { assetRepository.deleteById(primaryKey)
+                        .then(true.toMono())
+                })
                 .defaultIfEmpty(false)
     }
 
-    fun exists(assetId: UUID): Mono<Boolean> {
-        return assetRepository.existsById(assetId)
+    fun exists(assetId: UUID, tenantId: Int): Mono<Boolean> {
+        val primaryKey = AssetPrimaryKey(tenantId, assetId)
+        return assetRepository.existsById(primaryKey)
     }
 
     private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)

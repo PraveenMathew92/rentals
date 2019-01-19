@@ -1,6 +1,8 @@
 package com.example.rentals.service
 
-import com.example.rentals.domain.Customer
+import com.example.rentals.domain.customer.Customer
+import com.example.rentals.domain.customer.CustomerPrimaryKey
+import com.example.rentals.domain.customer.CustomerTable
 import com.example.rentals.repository.CustomerRepository
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -11,41 +13,45 @@ import reactor.core.publisher.toMono
 
 @Service
 class CustomerService(val customerRepository: CustomerRepository) {
-    fun create(customer: Customer): Mono<Boolean> {
+    fun create(customer: Customer, tenantId: Int): Mono<Boolean> {
+        val primaryKey = CustomerPrimaryKey(tenantId, customer.email)
         return with(customerRepository) {
-            existsById(customer.email).flatMap { it ->
+            existsById(primaryKey).flatMap { it ->
                 when (it) {
-                    false -> save(customer).map { (it == customer) }
+                    false -> save(CustomerTable(primaryKey, customer)).map { (it.customer == customer) }
                     else -> false.toMono()
                 }
             }
         }
     }
 
-    fun get(email: String): Mono<Customer> {
-        return customerRepository.findById(email)
+    fun get(email: String, tenantId: Int): Mono<Customer> {
+        val primaryKey = CustomerPrimaryKey(tenantId, email)
+        return customerRepository.findById(primaryKey).map { it.customer }
     }
 
-    fun delete(email: String): Mono<Boolean> {
+    fun delete(email: String, tenantId: Int): Mono<Boolean> {
+        val primaryKey = CustomerPrimaryKey(tenantId, email)
         return with(customerRepository) {
-            findById(email)
-                    .flatMap { deleteById(email)
+            findById(primaryKey)
+                    .flatMap { deleteById(primaryKey)
                             .then(true.toMono())
                     }
         }
                 .defaultIfEmpty(false)
     }
 
-    fun patch(email: String, patch: String): Mono<Boolean> {
+    fun patch(email: String, patch: String, tenantId: Int): Mono<Boolean> {
+        val primaryKey = CustomerPrimaryKey(tenantId, email)
         val mapper = ObjectMapper()
-            return get(email)
+            return get(email, tenantId)
                     .flatMap { it -> mapper.readValue(
                             JsonPatch.apply(stringToJsonNode(patch),
                                     stringToJsonNode(mapper.writeValueAsString(it)))
                                     .toString(),
                             Customer::class.java
                     ).toMono()
-                    }.flatMap { customerRepository.save(it)
+                    }.flatMap { customerRepository.save(CustomerTable(primaryKey, it))
                             .flatMap { true.toMono() }
                             .defaultIfEmpty(false)
                     }.switchIfEmpty(false.toMono())
@@ -53,7 +59,8 @@ class CustomerService(val customerRepository: CustomerRepository) {
 
     private fun stringToJsonNode(string: String): JsonNode = ObjectMapper().readTree(string)
 
-    fun exists(email: String): Mono<Boolean> {
-        return customerRepository.existsById(email)
+    fun exists(email: String, tenantId: Int): Mono<Boolean> {
+        val primaryKey = CustomerPrimaryKey(tenantId, email)
+        return customerRepository.existsById(primaryKey)
     }
 }

@@ -1,7 +1,7 @@
 package com.example.rentals.integrationTests
 
 import com.example.rentals.domain.Customer
-import com.example.rentals.domain.Asset
+import com.example.rentals.domain.asset.Asset
 import com.example.rentals.domain.CategoryFields
 import com.example.rentals.domain.OrderPrimaryKey
 import com.example.rentals.domain.Order

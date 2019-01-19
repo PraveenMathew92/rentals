@@ -1,6 +1,6 @@
 package com.example.rentals.integrationTests
 
-import com.example.rentals.domain.Asset
+import com.example.rentals.domain.asset.Asset
 import com.example.rentals.domain.CategoryFields
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +24,7 @@ class AssetIntegrationTest {
     )
 
     val assetWithCorrectedType = Asset(UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e"),
-    "Swift",
+            "Swift",
             CategoryFields("Maruti Suzuki", "Lxi", "5 Seater")
     )
 
