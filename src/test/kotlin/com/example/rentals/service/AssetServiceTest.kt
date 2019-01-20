@@ -73,7 +73,7 @@ class AssetServiceTest {
     fun `should return an empty Mono if the asset id is not a UUID`() {
         val assetService = AssetService(assetRepository)
 
-        whenever(assetRepository.findById(AssetPrimaryKey(tenantId, UUID(0,0))))
+        whenever(assetRepository.findById(AssetPrimaryKey(tenantId, UUID(0, 0))))
                 .thenReturn(Mono.empty())
 
         assertNull(assetService.get("Non-UUID String", tenantId).block())

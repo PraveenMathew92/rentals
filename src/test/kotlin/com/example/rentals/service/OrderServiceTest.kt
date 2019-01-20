@@ -31,7 +31,7 @@ internal class OrderServiceTest {
     private val assetId = UUID.fromString("65cf3c7c-f449-4cd4-85e1-bc61dd2db64e")
     private val order = Order(assetId, email, Date(), 100)
     private val tenantId = 22
-    private val orderTable = OrderTable(OrderPrimaryKey(OrderPartitionKey(tenantId, order.email), assetId),  order)
+    private val orderTable = OrderTable(OrderPrimaryKey(OrderPartitionKey(tenantId, order.email), assetId), order)
 
     private val orderRepository = mock<OrderRepository>()
     private val customerService = mock<CustomerService>()

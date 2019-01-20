@@ -1,7 +1,19 @@
 package com.example.rentals
 
+import com.example.rentals.converter.JSONToOrderPartitionKeyConverter
+import com.example.rentals.converter.JSONToAssetPrimaryKeyConverter
+import com.example.rentals.converter.JSONToCustomerPrimaryKeyConverter
 import com.example.rentals.converter.CategoryToJSONConverter
 import com.example.rentals.converter.JSONToCategoryConverter
+import com.example.rentals.converter.AssetPrimaryKeyToJSONConverter
+import com.example.rentals.converter.CustomerPrimaryKeyToJSONConverter
+import com.example.rentals.converter.OrderPartitionKeyToJSONConverter
+import com.example.rentals.converter.AssetToJSONConverter
+import com.example.rentals.converter.JSONToAssetConverter
+import com.example.rentals.converter.CustomerToJSONConverter
+import com.example.rentals.converter.JSONToCustomerConverter
+import com.example.rentals.converter.OrderToJSONConverter
+import com.example.rentals.converter.JSONToOrderConverter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.cassandra.config.AbstractReactiveCassandraConfiguration
@@ -14,7 +26,7 @@ import org.springframework.data.convert.CustomConversions
 @Configuration
 @EnableReactiveCassandraRepositories
 class ReactiveCassandraConfiguration : AbstractReactiveCassandraConfiguration() {
-    private val KEYSPACE_NAME = "rentals"
+    private val KEYSPACE_NAME = "rentals2"
 
     @Value("\${cassandra.host}")
     private lateinit var CASSANDRA_HOST: String
@@ -28,9 +40,20 @@ class ReactiveCassandraConfiguration : AbstractReactiveCassandraConfiguration() 
         return CustomConversions(
                 CustomConversions.StoreConversions.NONE,
                 listOf(JSONToCategoryConverter(),
-                        CategoryToJSONConverter())
-        )
-    }
+                        CategoryToJSONConverter(),
+                        AssetPrimaryKeyToJSONConverter(),
+                        JSONToAssetPrimaryKeyConverter(),
+                        CustomerPrimaryKeyToJSONConverter(),
+                        JSONToCustomerPrimaryKeyConverter(),
+                        OrderPartitionKeyToJSONConverter(),
+                        JSONToOrderPartitionKeyConverter(),
+                        AssetToJSONConverter(),
+                        JSONToAssetConverter(),
+                        CustomerToJSONConverter(),
+                        JSONToCustomerConverter(),
+                        OrderToJSONConverter(),
+                        JSONToOrderConverter()))
+        }
 
     override fun cluster(): CassandraClusterFactoryBean {
         val cluster = super.cluster()
