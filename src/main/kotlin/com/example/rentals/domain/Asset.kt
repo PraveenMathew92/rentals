@@ -6,7 +6,7 @@ import java.util.UUID
 
 @Table
 data class Asset(
-    @PrimaryKey val id: UUID = UUID(0, 0),
+    @PrimaryKey val id: AssetPrimaryKey = AssetPrimaryKey(),
     val name: String = "",
     val category: CategoryFields = CategoryFields("", "", "")
 )

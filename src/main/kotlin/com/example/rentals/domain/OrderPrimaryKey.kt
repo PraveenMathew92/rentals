@@ -8,6 +8,7 @@ import java.util.UUID
 
 @PrimaryKeyClass
 data class OrderPrimaryKey(
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED) val email: String = "",
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED, ordinal = 1) val tenantId: String = "",
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED, ordinal = 2) val email: String = "",
     @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED) val assetId: UUID = UUID(0, 0)
 ) : Serializable
