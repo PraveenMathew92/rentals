@@ -1,0 +1,1 @@
+Lsrc/test/kotlin/com/example/rentals/converter/JSONToCategoryConverterTest.kt 2kotlinXh

@@ -1,0 +1,1 @@
+Asrc/main/kotlin/com/example/rentals/repository/AssetRepository.kt 2kotlinX	h

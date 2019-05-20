@@ -1,0 +1,1 @@
+Lsrc/test/kotlin/com/example/rentals/integrationTests/AssetIntegrationTest.kt 2kotlinXNh

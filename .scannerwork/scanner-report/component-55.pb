@@ -1,0 +1,1 @@
+7<src/main/kotlin/com/example/rentals/domain/CategoryFields.kt 2kotlinXh

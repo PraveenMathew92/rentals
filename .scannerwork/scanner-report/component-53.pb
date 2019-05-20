@@ -1,0 +1,1 @@
+53src/main/kotlin/com/example/rentals/domain/Asset.kt 2kotlinXh

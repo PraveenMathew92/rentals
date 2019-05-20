@@ -1,0 +1,115 @@
+Environment variables:
+  - Apple_PubSub_Socket_Render=/private/tmp/com.apple.launchd.9hRLmTXGyP/Render
+  - COMMAND_MODE=unix2003
+  - CONDA_SHLVL=0
+  - HOME=/Users/mpraveen
+  - JAVA_HOME=/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre
+  - JAVA_MAIN_CLASS_2876=org.sonarsource.scanner.cli.Main
+  - LC_CTYPE=en_US.UTF-8
+  - LESS=-R
+  - LOGNAME=mpraveen
+  - LSCOLORS=Gxfxcxdxbxegedabagacad
+  - LUA_CPATH=/usr/local/share/torch/install/lib/?.dylib;/Users/pbhargava/.luarocks/lib/lua/5.1/?.so;/usr/local/share/torch/install/lib/lua/5.1/?.so;./?.so;/usr/local/lib/lua/5.1/?.so;/usr/local/lib/lua/5.1/loadall.so
+  - LUA_PATH=/Users/pbhargava/.luarocks/share/lua/5.1/?.lua;/Users/pbhargava/.luarocks/share/lua/5.1/?/init.lua;/usr/local/share/torch/install/share/lua/5.1/?.lua;/usr/local/share/torch/install/share/lua/5.1/?/init.lua;./?.lua;/usr/local/share/torch/install/share/luajit-2.1.0-beta1/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua
+  - PAGER=less
+  - PATH=/usr/local/share/torch/install/bin:/usr/local/share/torch/install/bin:/usr/local/share/miniconda3/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/bin
+  - PWD=/Users/mpraveen/side_projects/Spring Boot/rentals
+  - SECURITYSESSIONID=186a7
+  - SHELL=/bin/zsh
+  - SHLVL=1
+  - SSH_AUTH_SOCK=/private/tmp/com.apple.launchd.4VmmGg34b3/Listeners
+  - TERM=xterm-256color
+  - TMPDIR=/var/folders/xg/mpx__9x57zl8nzsj82hmq8f00000gn/T/
+  - USER=mpraveen
+  - XPC_FLAGS=0x0
+  - XPC_SERVICE_NAME=0
+  - ZDOTDIR=
+  - ZSH=/Users/mpraveen/.oh-my-zsh
+  - __CF_USER_TEXT_ENCODING=0x1F5:0x0:0x0
+System properties:
+  - awt.toolkit=sun.lwawt.macosx.LWCToolkit
+  - file.encoding=UTF-8
+  - file.encoding.pkg=sun.io
+  - file.separator=/
+  - ftp.nonProxyHosts=local|*.local|169.254/16|*.169.254/16
+  - gopherProxySet=false
+  - http.nonProxyHosts=local|*.local|169.254/16|*.169.254/16
+  - java.awt.graphicsenv=sun.awt.CGraphicsEnvironment
+  - java.awt.headless=true
+  - java.awt.printerjob=sun.lwawt.macosx.CPrinterJob
+  - java.class.path=/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/lib/sonar-scanner-cli-3.2.0.1227.jar
+  - java.class.version=52.0
+  - java.endorsed.dirs=/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/endorsed
+  - java.ext.dirs=/Users/mpraveen/Library/Java/Extensions:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java
+  - java.home=/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre
+  - java.io.tmpdir=/var/folders/xg/mpx__9x57zl8nzsj82hmq8f00000gn/T/
+  - java.library.path=/Users/mpraveen/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
+  - java.runtime.name=Java(TM) SE Runtime Environment
+  - java.runtime.version=1.8.0_121-b13
+  - java.specification.name=Java Platform API Specification
+  - java.specification.vendor=Oracle Corporation
+  - java.specification.version=1.8
+  - java.vendor=Oracle Corporation
+  - java.vendor.url=http://java.oracle.com/
+  - java.vendor.url.bug=http://bugreport.sun.com/bugreport/
+  - java.version=1.8.0_121
+  - java.vm.info=mixed mode
+  - java.vm.name=Java HotSpot(TM) 64-Bit Server VM
+  - java.vm.specification.name=Java Virtual Machine Specification
+  - java.vm.specification.vendor=Oracle Corporation
+  - java.vm.specification.version=1.8
+  - java.vm.vendor=Oracle Corporation
+  - java.vm.version=25.121-b13
+  - line.separator=
+
+  - os.arch=x86_64
+  - os.name=Mac OS X
+  - os.version=10.14.2
+  - path.separator=:
+  - project.home=/Users/mpraveen/side_projects/Spring Boot/rentals
+  - scanner.home=/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx
+  - socksNonProxyHosts=local|*.local|169.254/16|*.169.254/16
+  - sun.arch.data.model=64
+  - sun.boot.class.path=/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/resources.jar:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/rt.jar:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/sunrsasign.jar:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/jsse.jar:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/jce.jar:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/charsets.jar:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib/jfr.jar:/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/classes
+  - sun.boot.library.path=/Users/mpraveen/side_projects/sonar_qube/sonar-scanner-3.2.0.1227-macosx/jre/lib
+  - sun.cpu.endian=little
+  - sun.cpu.isalist=
+  - sun.io.unicode.encoding=UnicodeBig
+  - sun.java.command=org.sonarsource.scanner.cli.Main
+  - sun.java.launcher=SUN_STANDARD
+  - sun.jnu.encoding=UTF-8
+  - sun.management.compiler=HotSpot 64-Bit Tiered Compilers
+  - sun.os.patch.level=unknown
+  - user.country=US
+  - user.dir=/Users/mpraveen/side_projects/Spring Boot/rentals
+  - user.home=/Users/mpraveen
+  - user.language=en
+  - user.name=mpraveen
+  - user.timezone=Asia/Kolkata
+SonarQube plugins:
+  - SonarC# 6.5.0.3766 (csharp)
+  - SonarPython 1.8.0.1496 (python)
+  - SonarJava 4.15.0.12310 (java)
+  - Flex 2.3 (flex)
+  - SonarQube :: Plugins :: SCM :: Git 1.3.0.869 (scmgit)
+  - SonarXML 1.4.3.1027 (xml)
+  - SonarKotlin 1.4.0.155 (kotlin)
+  - SonarPHP 2.11.0.2485 (php)
+  - SonarTS 1.1.0.1079 (typescript)
+  - SonarQube :: Plugins :: SCM :: SVN 1.6.0.860 (scmsvn)
+  - SonarJS 3.2.0.5506 (javascript)
+Global properties:
+  - sonar.core.id=BF41A1F2-AWgJTgBZb1UY0HAp8-oS
+  - sonar.core.startTime=2019-01-01T20:16:37+0530
+Settings for module: com.example
+  - sonar.host.url=http://localhost:9000
+  - sonar.projectBaseDir=/Users/mpraveen/side_projects/Spring Boot/rentals
+  - sonar.projectKey=com.example
+  - sonar.projectName=rentals
+  - sonar.projectVersion=1.0
+  - sonar.scanner.app=ScannerCli
+  - sonar.scanner.appVersion=3.2.0.1227
+  - sonar.sourceEncoding=UTF-8
+  - sonar.sources=src
+  - sonar.verbose=true
+  - sonar.working.directory=/Users/mpraveen/side_projects/Spring Boot/rentals/.scannerwork

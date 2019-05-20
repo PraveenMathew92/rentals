@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  docker-database:
+    image: cassandra:latest
+  spring-boot-jpa-docker-webapp:
+    image: gradle-springboot
+    depends_on:
+      - docker-database
+    ports:
+      - 8080:8080
+    environment:
+      - cassandra.host=docker-database
