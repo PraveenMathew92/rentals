@@ -21,7 +21,7 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
     fun create(order: Order): Mono<Boolean> {
         val doesCustomerExists = customerService.exists(order.id.email)
         val doesAssetExists = assetService.exists(order.id.assetId)
-        val canAssetBeRented = orderRepository.findByKeyAssetId(order.id.assetId)
+        val canAssetBeRented = orderRepository.findById_AssetId(order.id.assetId)
                 .next()
                 .map { false }
                 .switchIfEmpty(true.toMono())
@@ -73,7 +73,7 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
     }
 
     fun safeDeleteCustomer(email: String): Mono<Boolean> {
-        val canDeleteCustomer = orderRepository.findByKeyEmail(email)
+        val canDeleteCustomer = orderRepository.findById_Email(email)
                 .next()
                 .map { false }
                 .switchIfEmpty(true.toMono())
@@ -84,7 +84,7 @@ class OrderService(val orderRepository: OrderRepository, val customerService: Cu
     }
 
     fun safeDeleteAsset(assetId: UUID): Mono<Boolean> {
-        val canDeleteAsset = orderRepository.findByKeyAssetId(assetId)
+        val canDeleteAsset = orderRepository.findById_AssetId(assetId)
                 .next()
                 .map { false }
                 .switchIfEmpty(true.toMono())

@@ -43,7 +43,7 @@ internal class OrderServiceTest {
         whenever(orderRepository.save(captor.capture())).thenReturn(order.toMono())
         whenever(customerService.exists(email)).thenReturn(true.toMono())
         whenever(assetService.exists(assetId)).thenReturn(true.toMono())
-        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
+        whenever(orderRepository.findById_AssetId(assetId)).thenReturn(Flux.empty())
 
         orderService.create(order).subscribe {
             assertTrue(it)
@@ -59,7 +59,7 @@ internal class OrderServiceTest {
             .thenReturn(true.toMono())
         whenever(customerService.exists(email)).thenReturn(true.toMono())
         whenever(assetService.exists(assetId)).thenReturn(true.toMono())
-        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
+        whenever(orderRepository.findById_AssetId(assetId)).thenReturn(Flux.empty())
 
         orderService.create(order).subscribe {
             assertFalse(it)
@@ -100,7 +100,6 @@ internal class OrderServiceTest {
         val patch = "[{\"op\": \"replace\", \"path\":\"rate\", \"value\": \"1000\"}]"
         val updatedOrder = order.copy(rate = 1000)
         val orderService = OrderService(orderRepository, customerService, assetService)
-        val captor = argumentCaptor<Order>()
 
         whenever(orderRepository.findById(OrderPrimaryKey(email, assetId))).thenReturn(order.toMono())
         whenever(orderRepository.save(updatedOrder)).thenReturn(order.toMono())
@@ -163,7 +162,7 @@ internal class OrderServiceTest {
 
         whenever(customerService.exists(email)).thenReturn(false.toMono())
         whenever(assetService.exists(assetId)).thenReturn(true.toMono())
-        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
+        whenever(orderRepository.findById_AssetId(assetId)).thenReturn(Flux.empty())
 
         assertThrows<CustomerNotFoundException> { orderService.create(order).block() }
     }
@@ -174,7 +173,7 @@ internal class OrderServiceTest {
 
         whenever(customerService.exists(email)).thenReturn(true.toMono())
         whenever(assetService.exists(assetId)).thenReturn(false.toMono())
-        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
+        whenever(orderRepository.findById_AssetId(assetId)).thenReturn(Flux.empty())
 
         assertThrows<AssetNotFoundException> { orderService.create(order).block() }
     }
@@ -185,7 +184,7 @@ internal class OrderServiceTest {
         val anotherOrderId = order.id.copy(email = "another-test@email.com")
         val anotherOrder = order.copy(id = anotherOrderId)
 
-        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.just(anotherOrder))
+        whenever(orderRepository.findById_AssetId(assetId)).thenReturn(Flux.just(anotherOrder))
         whenever(customerService.exists(email)).thenReturn(true.toMono())
         whenever(assetService.exists(assetId)).thenReturn(true.toMono())
 
@@ -196,7 +195,7 @@ internal class OrderServiceTest {
     fun `should throw CustomerCannotBeDeletedException on deleting the customer if the customer has rented out an asset`() {
         val orderService = OrderService(orderRepository, customerService, assetService)
 
-        whenever(orderRepository.findByKeyEmail(email)).thenReturn(Flux.just(order))
+        whenever(orderRepository.findById_Email(email)).thenReturn(Flux.just(order))
 
         assertThrows<CustomerCannotBeDeletedException> { orderService.safeDeleteCustomer(email).block() }
     }
@@ -205,7 +204,7 @@ internal class OrderServiceTest {
     fun `should call the delete of customer service if the customer is safe to be deleted`() {
         val orderService = OrderService(orderRepository, customerService, assetService)
 
-        whenever(orderRepository.findByKeyEmail(email)).thenReturn(Flux.empty())
+        whenever(orderRepository.findById_Email(email)).thenReturn(Flux.empty())
         whenever(customerService.delete(email)).thenReturn(true.toMono())
 
         orderService.safeDeleteCustomer(email).subscribe {
@@ -217,7 +216,7 @@ internal class OrderServiceTest {
     fun `should throw AssetCannotBeDeletedException on deleting the asset if the asset is rented out`() {
         val orderService = OrderService(orderRepository, customerService, assetService)
 
-        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.just(order))
+        whenever(orderRepository.findById_AssetId(assetId)).thenReturn(Flux.just(order))
 
         assertThrows<AssetCannotBeDeletedException> { orderService.safeDeleteAsset(assetId).block() }
     }
@@ -226,7 +225,7 @@ internal class OrderServiceTest {
     fun `should call the delete of asset service if the customer is safe to be deleted`() {
         val orderService = OrderService(orderRepository, customerService, assetService)
 
-        whenever(orderRepository.findByKeyAssetId(assetId)).thenReturn(Flux.empty())
+        whenever(orderRepository.findById_AssetId(assetId)).thenReturn(Flux.empty())
         whenever(assetService.delete(assetId.toString())).thenReturn(true.toMono())
 
         orderService.safeDeleteAsset(assetId).subscribe {

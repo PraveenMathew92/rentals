@@ -1,12 +1,12 @@
 package com.example.rentals.domain
 
-import org.springframework.data.cassandra.core.mapping.PrimaryKey
-import org.springframework.data.cassandra.core.mapping.Table
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import java.util.UUID
 
-@Table
+@Document
 data class Asset(
-    @PrimaryKey val id: UUID = UUID(0, 0),
+    @Id val id: UUID = UUID(0, 0),
     val name: String = "",
     val category: CategoryFields = CategoryFields("", "", "")
 )
