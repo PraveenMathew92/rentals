@@ -8,4 +8,4 @@ stages:
 Dependency Checker:
   stage: dependency-checker
   script:
-    - ./gradlew dependencyCheckAnalyze
+    - ./gradlew dependencyCheckAnalyze -Ddowload.quick.query.timestamp=false
