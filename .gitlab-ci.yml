@@ -2,9 +2,15 @@ image: openjdk:8-jdk
 
 stages:
   - build
+  - dependency-checker
   - test
 
 build:
   stage: build
   script:
     - ./gradlew clean build 
+
+Dependency Checker:
+  stage: dependency-checker
+  script:
+    - ./gradlew dependencyCheckAnalyze
